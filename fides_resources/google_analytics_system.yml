@@ -1,0 +1,31 @@
+system:
+  - fides_key: google_analytics_system
+    name: Google Analytics
+    description: Hosted third party analytics to track and analyze user behaviour
+    system_type: Third Party
+    privacy_declarations:
+      # See the Google Analytics documentation for a description of the possible
+      # fields collected by the tracker, including page URL, referrer, cookie ID, etc.
+      # https://developers.google.com/analytics/devguides/collection/analyticsjs/field-reference
+      - name: Track & report on page views
+        data_categories:
+          - user.derived.identifiable.browsing_history
+          - user.derived.identifiable.device.cookie_id
+          - user.derived.identifiable.telemetry
+          - user.derived.identifiable.location
+          - user.derived.nonidentifiable
+        data_use: improve
+        data_subjects:
+          - customer
+        data_qualifier: aggregated.anonymized.unlinked_pseudonymized.pseudonymized
+      # Google Analytics collects the user's IP address and derives geographic dimensions server-side.
+      # See https://developers.google.com/analytics/devguides/reporting/realtime/dimsmets/geonetwork
+      - name: Derive user geographic location
+        data_categories:
+          - user.derived.identifiable.device.ip_address
+          - user.derived.identifiable.location
+          - user.derived.identifiable
+        data_use: improve
+        data_subjects:
+          - customer
+        data_qualifier: aggregated.anonymized.unlinked_pseudonymized.pseudonymized.identified

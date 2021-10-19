@@ -5,6 +5,7 @@ from flask import Flask
 # NOTE: Defining these constants inline for simplicity, but in a real
 # application these must be loaded from ENV or similar for security!
 POSTGRES_URL = "postgresql://postgres:postgres@localhost:5432/flaskr"
+GOOGLE_ANALYTICS_ID = "UA-xxxxxxxxx-y"
 SECRET_KEY = "dev"
 
 
@@ -15,6 +16,7 @@ def create_app(test_config=None):
         SECRET_KEY=SECRET_KEY,
         SQLALCHEMY_DATABASE_URI=POSTGRES_URL,
         SQLALCHEMY_TRACK_MODIFICATIONS=False,
+        GOOGLE_ANALYTICS_ID=GOOGLE_ANALYTICS_ID,
     )
 
     if test_config is None:

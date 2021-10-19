@@ -1,5 +1,15 @@
 <!doctype html>
 <head>
+    {% if config['GOOGLE_ANALYTICS_ID'] %}
+        <!-- Global site tag (gtag.js) - Google Analytics -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id={{ config['GOOGLE_ANALYTICS_ID'] }}"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag("js", new Date());
+            gtag("config", "{{ config['GOOGLE_ANALYTICS_ID'] }}");
+        </script>
+    {% endif %}
     <title>{% block title %}{% endblock %} - Flaskr</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>

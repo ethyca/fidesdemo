@@ -1,0 +1,5 @@
+[cli]
+server_url = "http://localhost:8080"
+
+[api]
+database_url = "postgresql://postgres:postgres@localhost:5432/fidesctl"

@@ -1,5 +1,5 @@
 .DEFAULT_GOAL := help
-.PHONY: help install server test compose-up teardown clean black
+.PHONY: help install server test fidesctl-evaluate compose-up teardown clean black
 
 help:
 	@echo --------------------
@@ -10,6 +10,10 @@ help:
 	@echo server - Runs the Flask server in development mode, including using compose-up to start all dependencies
 	@echo ----
 	@echo test - Runs the pytest suite, including using compose-up to start all dependencies
+	@echo ----
+	@echo fidesctl-evaluate - Uses fidesctl to perform a dry policy evaluation of the project manifests in fides_resources/
+	@echo ----
+	@echo fidesctl-generate-dataset - Uses fidesctl to generate an example dataset from the Postgres schema
 	@echo ----
 	@echo compose-up - Uses docker compose to bring up the project dependencies including databases, Fides servers, etc.
 	@echo ----
@@ -41,6 +45,18 @@ server: compose-up
 test: compose-up
 	@echo "Running pytest..."
 	FLASK_APP=flaskr FLASK_ENV=development ./venv/bin/pytest
+
+####################
+# fidesctl
+####################
+
+fidesctl-evaluate: compose-up
+	@echo "Evaluating policy with fidesctl..."
+	./venv/bin/fidesctl evaluate --dry fides_resources
+
+fidesctl-generate-dataset: compose-up
+	@echo "Generating dataset with fidesctl..."
+	./venv/bin/fidesctl generate-dataset postgresql://postgres:postgres@localhost:5432/flaskr example.yml
 
 ####################
 # Utils

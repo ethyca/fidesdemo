@@ -26,5 +26,36 @@ services:
     environment:
       - FIDESCTL__API__DATABASE_URL=postgresql://postgres:postgres@db:5432/fidesctl
 
+  redis:
+    image: "redis:6.2.5-alpine"
+    command: redis-server --requirepass redispass
+    expose:
+      - 6379
+    ports:
+      - "6379:6379"
+
+  fidesops:
+    image: ethyca/fidesops:0.9.9
+    depends_on:
+      - db
+      - redis
+    command: fidesops webserver
+    expose:
+      - 8000
+    ports:
+      - "8000:8080"
+    environment:
+      - FIDESOPS__SECURITY__APP_ENCRYPTION_KEY=QLMI5I0xLWUXE4JN4Asnba79JiBHWWM3
+      - FIDESOPS__SECURITY__OAUTH_ROOT_CLIENT_ID=fidesopsadmin
+      - FIDESOPS__SECURITY__OAUTH_ROOT_CLIENT_SECRET=fidesopsadminsecret
+      - FIDESOPS__DATABASE__SERVER=db
+      - FIDESOPS__DATABASE__USER=postgres
+      - FIDESOPS__DATABASE__PASSWORD=postgres
+      - FIDESOPS__DATABASE__DB=fidesops
+      - FIDESOPS__DATABASE__PORT=5432
+      - FIDESOPS__REDIS__HOST=redis
+      - FIDESOPS__REDIS__PORT=6379
+      - FIDESOPS__REDIS__PASSWORD=redispass
+
 volumes:
   postgres:

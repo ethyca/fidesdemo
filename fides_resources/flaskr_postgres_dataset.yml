@@ -9,46 +9,94 @@ dataset:
       data_categories: [system.operations]
     - name: description
       data_categories: [user.provided.identifiable]
+      fidesops_meta:
+        data_type: string
     - name: id
       data_categories: [system.operations]
+      fidesops_meta:
+        primary_key: True
+        data_type: integer
     - name: name
       data_categories: [user.provided.identifiable]
+      fidesops_meta:
+        data_type: string
     - name: price
       data_categories: [user.provided.identifiable]
+      fidesops_meta:
+        data_type: integer
     - name: seller_id
       data_categories: [user.derived.identifiable.unique_id]
+      fidesops_meta:
+        references:
+          - dataset: flaskr_postgres_dataset
+            field: users.id
+            direction: from
+        data_type: integer
   - name: purchases
     fields:
     - name: buyer_id
       data_categories: [user.derived.identifiable.unique_id]
+      fidesops_meta:
+        references:
+          - dataset: flaskr_postgres_dataset
+            field: users.id
+            direction: from
+        data_type: integer
     - name: city
       data_categories: [user.provided.identifiable.contact.city]
+      fidesops_meta:
+        data_type: string
     - name: created_at
       data_categories: [system.operations]
     - name: id
       data_categories: [system.operations]
+      fidesops_meta:
+        primary_key: True
+        data_type: integer
     - name: product_id
       data_categories: [system.operations]
+      fidesops_meta:
+        data_type: integer
     - name: state
       data_categories: [user.provided.identifiable.contact.state]
+      fidesops_meta:
+        data_type: string
     - name: street_1
       data_categories: [user.provided.identifiable.contact.street]
+      fidesops_meta:
+        data_type: string
     - name: street_2
       data_categories: [user.provided.identifiable.contact.street]
+      fidesops_meta:
+        data_type: string
     - name: zip
       data_categories: [user.provided.identifiable.contact.postal_code]
+      fidesops_meta:
+        data_type: string
   - name: users
     fields:
     - name: created_at
       data_categories: [system.operations]
     - name: email
       data_categories: [user.provided.identifiable.contact.email]
+      fidesops_meta:
+        identity: email
+        data_type: string
     - name: first_name
       data_categories: [user.provided.identifiable.name]
+      fidesops_meta:
+        data_type: string
     - name: id
       data_categories: [user.derived.identifiable.unique_id]
+      fidesops_meta:
+        primary_key: True
+        data_type: integer
     - name: last_name
       data_categories: [user.provided.identifiable.name]
+      fidesops_meta:
+        data_type: string
     - name: password
       data_categories: [user.provided.identifiable.credentials.password]
       data_qualifier: aggregated.anonymized.unlinked_pseudonymized.pseudonymized
+      fidesops_meta:
+        data_type: string

@@ -40,6 +40,8 @@ services:
       - db
       - redis
     command: fidesops webserver
+    volumes:
+      - ./fides_uploads:/fidesops/fides_uploads
     expose:
       - 8000
     ports:

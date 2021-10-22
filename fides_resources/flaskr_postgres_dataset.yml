@@ -17,10 +17,20 @@ dataset:
       data_categories: [user.provided.identifiable]
     - name: seller_id
       data_categories: [user.derived.identifiable.unique_id]
+      fidesops_meta:
+        references:
+          - dataset: flaskr_postgres_dataset
+            field: users.id
+            direction: from
   - name: purchases
     fields:
     - name: buyer_id
       data_categories: [user.derived.identifiable.unique_id]
+      fidesops_meta:
+        references:
+          - dataset: flaskr_postgres_dataset
+            field: users.id
+            direction: from
     - name: city
       data_categories: [user.provided.identifiable.contact.city]
     - name: created_at
@@ -43,6 +53,8 @@ dataset:
       data_categories: [system.operations]
     - name: email
       data_categories: [user.provided.identifiable.contact.email]
+      fidesops_meta:
+        identity: email
     - name: first_name
       data_categories: [user.provided.identifiable.name]
     - name: id

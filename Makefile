@@ -1,5 +1,5 @@
 .DEFAULT_GOAL := help
-.PHONY: help install server test fidesctl-init-db fidesctl-evaluate compose-up teardown clean black
+.PHONY: help install server test fidesctl-init-db fidesctl-evaluate fidesops-request fidesops-test compose-up teardown clean black
 
 help:
 	@echo --------------------
@@ -16,6 +16,10 @@ help:
 	@echo fidesctl-evaluate - Uses fidesctl to perform a dry policy evaluation of the project manifests in fides_resources/
 	@echo ----
 	@echo fidesctl-generate-dataset - Uses fidesctl to generate an example dataset from the Postgres schema
+	@echo ----
+	@echo fidesops-request - Uses fidesops to interactively configure policy and execute privacy requests
+	@echo ----
+	@echo fidesops-test - Runs fidesops-request in test mode with additional logging and pauses
 	@echo ----
 	@echo compose-up - Uses docker compose to bring up the project dependencies including databases, Fides servers, etc.
 	@echo ----
@@ -66,6 +70,14 @@ fidesctl-generate-dataset: compose-up
 	@echo "Generating dataset with fidesctl..."
 	./venv/bin/fidesctl generate-dataset postgresql://postgres:postgres@localhost:5432/flaskr example.yml
 
+fidesops-request: compose-up
+	@echo "Configuring fidesops and running an example request..."
+	./venv/bin/python flaskr/fidesops.py
+
+fidesops-test: compose-up
+	@echo "Configuring fidesops in test mode to run an example request..."
+	./venv/bin/python flaskr/fidesops.py --test
+
 ####################
 # Utils
 ####################
@@ -90,6 +102,7 @@ clean: teardown
 	@echo "Cleaning project files, docker containers, volumes, etc...."
 	docker system prune -a --volumes
 	rm -rf instance/ venv/ __pycache__/
+	rm fides_uploads/*.json
 
 black:
 	@echo "Auto-formatting project code with Black..."

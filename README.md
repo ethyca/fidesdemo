@@ -22,7 +22,7 @@ To run this project, first ensure you have the following requirements installed 
 
 ## Tutorial Steps
 
-The full walkthrough for setting up this demo project can be found at https://ethyca.github.io/fides/tutorial/.
+The full walkthrough for setting up this demo project can be found at https://ethyca.github.io/fides/tutorial/overview/.
 
 You can also recreate the tutorial steps by checking out the different git tags:
 

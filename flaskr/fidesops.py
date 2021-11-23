@@ -510,9 +510,9 @@ if __name__ == "__main__":
         print("Press [enter] to continue...")
         input()
 
-    create_postgres_connection(key="flaskr-postgres", access_token=access_token)
+    create_postgres_connection(key="flaskr_postgres", access_token=access_token)
     configure_postgres_connection(
-        key="flaskr-postgres",
+        key="flaskr_postgres",
         host=POSTGRES_SERVER,
         port=POSTGRES_PORT,
         dbname="flaskr",
@@ -527,7 +527,7 @@ if __name__ == "__main__":
         input()
 
     create_local_storage(
-        key="example-storage",
+        key="example_storage",
         format="json",
         access_token=access_token,
     )
@@ -539,12 +539,12 @@ if __name__ == "__main__":
             input()
 
         validate_dataset(
-            connection_key="flaskr-postgres",
+            connection_key="flaskr_postgres",
             yaml_path="fides_resources/flaskr_postgres_dataset.yml",
             access_token=access_token,
         )
         datasets = create_dataset(
-            connection_key="flaskr-postgres",
+            connection_key="flaskr_postgres",
             yaml_path="fides_resources/flaskr_postgres_dataset.yml",
             access_token=access_token,
         )
@@ -561,26 +561,26 @@ if __name__ == "__main__":
             ).split(",")
         ]
         create_policy(
-            key="example-request-policy",
+            key="example_request_policy",
             access_token=access_token,
         )
         # Delete any existing policy rule so we can reconfigure it based on input
         delete_policy_rule(
-            policy_key="example-request-policy",
-            key="access-user-data",
+            policy_key="example_request_policy",
+            key="access_user_data",
             access_token=access_token,
         )
         create_policy_rule(
-            policy_key="example-request-policy",
-            key="access-user-data",
+            policy_key="example_request_policy",
+            key="access_user_data",
             action_type="access",
-            storage_destination_key="example-storage",
+            storage_destination_key="example_storage",
             access_token=access_token,
         )
         for data_category in data_categories:
             create_policy_rule_target(
-                policy_key="example-request-policy",
-                rule_key="access-user-data",
+                policy_key="example_request_policy",
+                rule_key="access_user_data",
                 data_category=data_category,
                 access_token=access_token,
             )
@@ -592,7 +592,7 @@ if __name__ == "__main__":
         email = str(input() or "user@example.com")
         privacy_requests = create_privacy_request(
             email=email,
-            policy_key="example-request-policy",
+            policy_key="example_request_policy",
             access_token=access_token,
         )
         privacy_request_id = privacy_requests["succeeded"][0]["id"]

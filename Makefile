@@ -84,12 +84,12 @@ fidesops-test: compose-up
 
 compose-up:
 	@echo "Bringing up docker containers..."
-	@docker compose up -d
+	@docker compose-up -d
 	@pg_isready --host localhost --port 5432 || (echo "Waiting 5s for Postgres to start..." && sleep 5)
 
 teardown:
 	@echo "Bringing down docker containers..."
-	@docker compose down --remove-orphans
+	@docker compose-down --remove-orphans
 
 reset-db: teardown
 	@echo "Resetting database..."

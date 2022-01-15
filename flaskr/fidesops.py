@@ -116,7 +116,7 @@ def create_postgres_connection(key, access_token):
             "access": "write",
         },
     ]
-    response = requests.put(
+    response = requests.patch(
         f"{FIDESOPS_URL}/api/v1/connection",
         headers=oauth_headers(access_token=access_token),
         json=connection_create_data,
@@ -205,7 +205,7 @@ def validate_dataset(connection_key, yaml_path, access_token):
             )
 
     raise RuntimeError(
-        f"fidesops dataset creation failed! response.status_code={response.status_code}, response.json()={response.json()}"
+        f"fidesops dataset validation failed! response.status_code={response.status_code}, response.json()={response.json()}"
     )
 
 
@@ -225,7 +225,7 @@ def create_dataset(connection_key, yaml_path, access_token):
         dataset = yaml.safe_load(file).get("dataset", [])[0]
 
     dataset_create_data = [dataset]
-    response = requests.put(
+    response = requests.patch(
         f"{FIDESOPS_URL}/api/v1/connection/{connection_key}/dataset",
         headers=oauth_headers(access_token=access_token),
         json=dataset_create_data,
@@ -263,7 +263,7 @@ def create_local_storage(key, format, access_token):
             },
         },
     ]
-    response = requests.put(
+    response = requests.patch(
         f"{FIDESOPS_URL}/api/v1/storage/config",
         headers=oauth_headers(access_token=access_token),
         json=storage_create_data,
@@ -297,7 +297,7 @@ def create_policy(key, access_token):
             "key": key,
         },
     ]
-    response = requests.put(
+    response = requests.patch(
         f"{FIDESOPS_URL}/api/v1/policy",
         headers=oauth_headers(access_token=access_token),
         json=policy_create_data,
@@ -329,10 +329,11 @@ def delete_policy_rule(policy_key, key, access_token):
 
 
 def create_policy_rule(
-    policy_key, key, action_type, storage_destination_key, access_token
+    policy_key, key, action_type, storage_destination_key, masking_strategy, access_token
 ):
     """
-    Create a policy rule to return matched data in an access request to the given storage destination.
+    Create a policy rule to either access data and upload to a storage
+    destination, or erase data with the given masking strategy.
 
     Returns the response JSON if successful, or throws an error otherwise.
 
@@ -345,9 +346,10 @@ def create_policy_rule(
             "key": key,
             "action_type": action_type,
             "storage_destination_key": storage_destination_key,
+            "masking_strategy": masking_strategy,
         },
     ]
-    response = requests.put(
+    response = requests.patch(
         f"{FIDESOPS_URL}/api/v1/policy/{policy_key}/rule",
         headers=oauth_headers(access_token=access_token),
         json=rule_create_data,
@@ -380,7 +382,7 @@ def create_policy_rule_target(policy_key, rule_key, data_category, access_token)
             "data_category": data_category,
         },
     ]
-    response = requests.put(
+    response = requests.patch(
         f"{FIDESOPS_URL}/api/v1/policy/{policy_key}/rule/{rule_key}/target",
         headers=oauth_headers(access_token=access_token),
         json=target_create_data,
@@ -412,7 +414,7 @@ def create_privacy_request(email, policy_key, access_token):
         {
             "requested_at": str(datetime.utcnow()),
             "policy_key": policy_key,
-            "identities": [{"email": email}],
+            "identity": {"email": email},
         },
     ]
     response = requests.post(
@@ -433,24 +435,31 @@ def create_privacy_request(email, policy_key, access_token):
         f"fidesops privacy request creation failed! response.status_code={response.status_code}, response.json()={response.json()}"
     )
 
-
 def print_results(privacy_request_id):
     """
     Check to see if a result JSON for the given privacy request exists, and
     print it to the console if so.
     """
     results_path = f"fides_uploads/{privacy_request_id}.json"
-    if exists(results_path):
-        logger.info(
-            f"Successfully read fidesops privacy request results from {results_path}:"
-        )
-        with open(f"fides_uploads/{privacy_request_id}.json", "r") as file:
-            results_json = json.loads(file.read())
-            print(json.dumps(results_json, indent=4))
-    else:
-        raise RuntimeError(
-            f"fidesops privacy request results not found at results_path={results_path}"
-        )
+    wait_time = 0
+    print(f"Waiting for fidesops privacy request results to upload to {results_path}...")
+    while wait_time < 5:
+        if exists(results_path):
+            requests.get(f"{FIDESOPS_URL}/health")
+            logger.info(
+                f"Successfully read fidesops privacy request results from {results_path}:"
+            )
+            with open(f"fides_uploads/{privacy_request_id}.json", "r") as file:
+                results_json = json.loads(file.read())
+                print(json.dumps(results_json, indent=4))
+            return
+        else:
+            time.sleep(0.1)
+            wait_time += 0.1
+
+    raise RuntimeError(
+        f"fidesops privacy requests failed to upload to {results_path}!"
+    )
 
 
 if __name__ == "__main__":
@@ -564,23 +573,35 @@ if __name__ == "__main__":
             key="example_request_policy",
             access_token=access_token,
         )
+
+        # Choose the action type
+        print(
+            "\n\nSelect the action type for request policy (access or erasure) [access]"
+        )
+        action_type = input() or "access"
+        masking_strategy = {
+            "strategy": "hmac",
+            "configuration": {}
+        }
+
         # Delete any existing policy rule so we can reconfigure it based on input
         delete_policy_rule(
             policy_key="example_request_policy",
-            key="access_user_data",
+            key="example_policy_rule",
             access_token=access_token,
         )
         create_policy_rule(
             policy_key="example_request_policy",
-            key="access_user_data",
-            action_type="access",
+            key="example_policy_rule",
+            action_type=action_type,
             storage_destination_key="example_storage",
+            masking_strategy=masking_strategy,
             access_token=access_token,
         )
         for data_category in data_categories:
             create_policy_rule_target(
                 policy_key="example_request_policy",
-                rule_key="access_user_data",
+                rule_key="example_policy_rule",
                 data_category=data_category,
                 access_token=access_token,
             )
@@ -596,7 +617,8 @@ if __name__ == "__main__":
             access_token=access_token,
         )
         privacy_request_id = privacy_requests["succeeded"][0]["id"]
-        print_results(privacy_request_id=privacy_request_id)
+        if action_type == "access":
+            print_results(privacy_request_id=privacy_request_id)
 
         print("Complete! Press [y] to execute another request (or any key to quit)")
         should_continue = input() == "y"

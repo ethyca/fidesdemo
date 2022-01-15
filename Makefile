@@ -1,5 +1,5 @@
 .DEFAULT_GOAL := help
-.PHONY: help install server test fidesctl-init-db fidesctl-evaluate fidesops-request fidesops-test compose-up teardown clean black
+.PHONY: help install server test fidesctl-evaluate fidesops-request fidesops-test compose-up teardown clean black
 
 help:
 	@echo --------------------
@@ -10,8 +10,6 @@ help:
 	@echo server - Runs the Flask server in development mode, including using compose-up to start all dependencies
 	@echo ----
 	@echo test - Runs the pytest suite, including using compose-up to start all dependencies
-	@echo ----
-	@echo fidesctl-init-db - Initializes fidesctl database
 	@echo ----
 	@echo fidesctl-evaluate - Uses fidesctl to perform a dry policy evaluation of the project manifests in fides_resources/
 	@echo ----
@@ -42,8 +40,6 @@ install: compose-up
 	@./venv/bin/pip install -e .
 	@echo "Initializing Flask database..."
 	FLASK_APP=flaskr FLASK_ENV=development ./venv/bin/flask init-db
-	@echo "Initializing fidesctl db.."
-	./venv/bin/fidesctl init-db
 	@echo "Done! Run '. venv/bin/activate' to activate venv"
 
 server: compose-up
@@ -57,10 +53,6 @@ test: compose-up
 ####################
 # fidesctl
 ####################
-
-fidesctl-init-db: compose-up
-	@echo "Initializing fidesctl db.."
-	./venv/bin/fidesctl init-db
 
 fidesctl-evaluate: compose-up
 	@echo "Evaluating policy with fidesctl..."
@@ -96,13 +88,12 @@ reset-db: teardown
 	docker volume rm fidesdemo_postgres
 	@make compose-up
 	FLASK_APP=flaskr FLASK_ENV=development ./venv/bin/flask init-db
-	./venv/bin/fidesctl init-db
 
 clean: teardown
 	@echo "Cleaning project files, docker containers, volumes, etc...."
 	docker system prune -a --volumes
 	rm -rf instance/ venv/ __pycache__/
-	rm fides_uploads/*.json
+	rm -f fides_uploads/*.json
 
 black:
 	@echo "Auto-formatting project code with Black..."

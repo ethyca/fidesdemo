@@ -1,21 +1,21 @@
 {% extends 'base.html' %}
 
 {% block header %}
-    <h1>{% block title %}Edit "{{ product['name'] }}"{% endblock %}</h1>
+    <h3>{% block title %}Edit "{{ product['name'] }}"{% endblock %}</h3>
 {% endblock %}
 
 {% block content %}
     <form method="post">
-        <label for="name">Name</label>
-        <input type="text" name="name" id="name" value="{{ request.form['name'] or product['name'] }}" required>
-        <label for="description">Description</label>
-        <textarea name="description" id="description">{{ request.form['description'] or product['description'] }}</textarea>
-        <label for="price">Price</label>
-        <input type="number" step="0.01" name="price" id="price" value="{{ request.form['price'] or product['price'] }}" required>
-        <input type="submit" value="Save">
+        <label class="form-label" for="name">Name</label class="form-label">
+        <input class="form-control" type="text" name="name" id="name" value="{{ request.form['name'] or product['name'] }}" required>
+        <label class="form-label" for="description">Description</label class="form-label">
+        <textarea class="form-control" name="description" id="description">{{ request.form['description'] or product['description'] }}</textarea>
+        <label class="form-label" for="price">Price</label class="form-label">
+        <input class="form-control" type="number" step="0.01" name="price" id="price" value="{{ request.form['price'] or product['price'] }}" required>
+        <input class="btn btn-primary" type="submit" value="Save">
     </form>
     <hr>
     <form action="{{ url_for('product.delete', id=product['id']) }}" method="post">
-        <input class="danger" type="submit" value="Delete" onclick="return confirm('Are you sure?');">
+        <input class="btn btn-danger" type="submit" value="Delete" onclick="return confirm('Are you sure?');">
     </form>
 {% endblock %}

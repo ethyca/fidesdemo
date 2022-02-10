@@ -1,6 +1,5 @@
 html {
-    font-family: sans-serif;
-    background: #eee;
+    background: #e2e8f0;
     padding: 1rem;
 }
 
@@ -10,36 +9,38 @@ body {
     background: white;
 }
 
-h1 {
-    font-family: serif;
-    color: #377ba8;
+h1,
+h3,
+h5 {
+    color: #111439;
     margin: 1rem 0;
 }
 
 a {
-    color: #377ba8;
+    color: #824ef2;
 }
 
 hr {
+    background-color: transparent;
     border: none;
-    border-top: 1px solid lightgray;
+    border-top: 1px solid #718096;
 }
 
 nav {
-    background: lightgray;
+    background: #f7fafc;
     display: flex;
     align-items: center;
-    padding: 0 0.5rem;
+    padding: 0 1rem 1rem;
 }
 
-nav h1 {
+nav img {
+    max-height: 1em;
+    margin-bottom: 3px;
+}
+
+nav h5 {
     flex: auto;
     margin: 0;
-}
-
-nav h1 a {
-    text-decoration: none;
-    padding: 0.25rem 0.5rem;
 }
 
 nav ul {
@@ -60,15 +61,15 @@ header .action {
     padding: 0 1rem 1rem;
 }
 
+article>header,
 .content>header {
-    border-bottom: 1px solid lightgray;
     display: flex;
-    align-items: flex-end;
+    align-items: center;
 }
 
-.content>header h1 {
+.content>header h3 {
     flex: auto;
-    margin: 1rem 0 0.25rem 0;
+    margin: 1rem 0;
 }
 
 .flash {
@@ -78,48 +79,19 @@ header .action {
     border: 1px solid #377ba8;
 }
 
-.post>header {
-    display: flex;
-    align-items: flex-end;
-    font-size: 0.85em;
-}
-
-.post>header>div:first-of-type {
+.product>header>div:first-of-type {
     flex: auto;
 }
 
-.post>header h1 {
-    font-size: 1.5em;
-    margin-bottom: 0;
-}
-
-.post .about {
-    color: slategray;
+.product .about {
+    font-size: 0.9em;
+    color: #718096;
     font-style: italic;
-}
-
-.post .body {
-    white-space: pre-line;
-}
-
-.content:last-child {
-    margin-bottom: 0;
-}
-
-.content form {
-    margin: 1em 0;
-    display: flex;
-    flex-direction: column;
-}
-
-.content label {
-    font-weight: bold;
-    margin-bottom: 0.5em;
-}
-
-.content input,
-.content textarea {
     margin-bottom: 1em;
+}
+
+.product .body {
+    white-space: pre-line;
 }
 
 .content textarea {
@@ -127,11 +99,20 @@ header .action {
     resize: vertical;
 }
 
-input.danger {
-    color: #cc2f2e;
+form .form-control {
+    margin-bottom: 0.5rem;
 }
 
-input[type=submit] {
-    align-self: start;
-    min-width: 10em;
+form .btn {
+    margin-top: 0.5rem;
+}
+
+.btn-primary {
+    background-color: #111439;
+    border-color: #111439;
+}
+
+.btn-primary:hover {
+    background-color: #464b83;
+    border-color: #464b83;
 }

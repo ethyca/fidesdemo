@@ -75,7 +75,7 @@ flaskr=# SELECT * FROM purchases;
 
 The full walkthrough for setting up this demo project can be found in two parts:
 
-1. Setting up `fidesctl`: https://ethyca.github.io/fides/tutorial/
+1. Setting up `fidesctl`: https://ethyca.github.io/fides/1.3.1/tutorial/
 1. Setting up `fidesops`: https://ethyca.github.io/fidesops/tutorial/
 
 You can also recreate the tutorial steps by checking out the different git tags:

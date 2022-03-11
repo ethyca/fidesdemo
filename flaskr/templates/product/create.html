@@ -1,17 +1,16 @@
 {% extends 'base.html' %}
 
 {% block header %}
-    <h1>{% block title %}New Product{% endblock %}</h1>
+    <h3>{% block title %}New Product{% endblock %}</h3>
 {% endblock %}
-
 {% block content %}
     <form method="post">
-        <label for="name">Name</label>
-        <input type="text" name="name" id="name" value="{{ request.form['name'] }}" required>
-        <label for="description">Description</label>
-        <textarea name="description" id="description" required>{{ request.form['description'] }}</textarea>
-        <label for="price">Price</label>
-        <input type="number" step="0.01" name="price" id="price" value="{{ request.form['price'] }}" required>
-        <input type="submit" value="Save">
+        <label class="form-label" for="name">Name</label class="form-label">
+        <input class="form-control" type="text" name="name" id="name" value="{{ request.form['name'] }}" required>
+        <label class="form-label" for="description">Description</label class="form-label">
+        <textarea class="form-control" name="description" id="description" required>{{ request.form['description'] }}</textarea>
+        <label class="form-label" for="price">Price</label class="form-label">
+        <input class="form-control" type="number" step="0.01" name="price" id="price" value="{{ request.form['price'] }}" required>
+        <input class="btn btn-primary" type="submit" value="Save">
     </form>
 {% endblock %}

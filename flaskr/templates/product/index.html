@@ -1,9 +1,9 @@
 {% extends 'base.html' %}
 
 {% block header %}
-    <h1>{% block title %}Products{% endblock %}</h1>
+    <h3>{% block title %}Products{% endblock %}</h3>
     {% if g.user %}
-        <a class="action" href="{{ url_for('product.create') }}">New</a>
+        <a class="btn btn-primary action" href="{{ url_for('product.create') }}">New</a>
     {% endif %}
 {% endblock %}
 
@@ -11,17 +11,15 @@
     {% for product in products %}
         <article class="product">
             <header>
-                <div>
-                    <h1>{{ product['name'] }}</h1>
-                    <div class="about">added by {{ product['first_name'] }} on {{ product['created_at'] }}</div>
-                </div>
+                <h5>{{ product['name'] }}</h5>
                 {% if g.user['id'] == product['seller_id'] %}
                     <a class="action" href="{{ url_for('product.update', id=product['id']) }}">Edit</a>
                 {% endif %}
             </header>
+            <div class="about">added by {{ product['first_name'] }} on {{ product['created_at'] }}</div>
             <p class="description">{{ product['description'] }}</p>
             <p class="price">Price: ${{ product['price'] }}</p>
-            <a class="action" href="{{ url_for('purchase.create', product_id=product['id']) }}">Purchase</a>
+            <a class="btn btn-primary" href="{{ url_for('purchase.create', product_id=product['id']) }}">Purchase</a>
         </article>
         {% if not loop.last %}
             <hr>

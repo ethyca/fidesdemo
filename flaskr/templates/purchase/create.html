@@ -1,21 +1,21 @@
 {% extends 'base.html' %}
 
 {% block header %}
-    <h1>{% block title %}New Purchase - {{ product['name'] }}{% endblock %}</h1>
+    <h3>{% block title %}New Purchase - {{ product['name'] }}{% endblock %}</h3>
 {% endblock %}
 
 {% block content %}
     <form method="post">
-        <label for="street_1">Street 1</label>
-        <input type="text" name="street_1" id="street_1" value="{{ request.form['street_1'] }}" required>
-        <label for="street_2">Street 2</label>
-        <input type="text" name="street_2" id="street_2" value="{{ request.form['street_2'] }}">
-        <label for="city">City</label>
-        <input type="text" name="city" id="city" value="{{ request.form['city'] }}" required>
-        <label for="state">State</label>
-        <input type="text" name="state" id="state" value="{{ request.form['state'] }}" required>
-        <label for="zip">Zip</label>
-        <input type="text" name="zip" id="zip" value="{{ request.form['zip'] }}" required>
-        <input type="submit" value="Purchase">
+        <label class="form-label" for="street_1">Street 1</label class="form-label">
+        <input class="form-control" type="text" name="street_1" id="street_1" value="{{ request.form['street_1'] }}" required>
+        <label class="form-label" for="street_2">Street 2</label class="form-label">
+        <input class="form-control" type="text" name="street_2" id="street_2" value="{{ request.form['street_2'] }}">
+        <label class="form-label" for="city">City</label class="form-label">
+        <input class="form-control" type="text" name="city" id="city" value="{{ request.form['city'] }}" required>
+        <label class="form-label" for="state">State</label class="form-label">
+        <input class="form-control" type="text" name="state" id="state" value="{{ request.form['state'] }}" required>
+        <label class="form-label" for="zip">Zip</label class="form-label">
+        <input class="form-control" type="text" name="zip" id="zip" value="{{ request.form['zip'] }}" required>
+        <input class="btn btn-primary" type="submit" value="Purchase">
     </form>
 {% endblock %}

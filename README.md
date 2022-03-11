@@ -33,9 +33,14 @@ Once installed you can start the server with:
 make server
 ```
 
-Run the project tests with:
+Run an example fidesops privacy request with:
 ```
-make test
+make fidesops-request
+```
+
+Run an example fidesctl privacy evaluation with:
+```
+make fidesctl-evaluate
 ```
 
 ## Example Application: "Flaskr"

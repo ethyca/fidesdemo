@@ -20,13 +20,26 @@ import yaml
 logger = logging.getLogger(__name__)
 
 
+# NOTE: In a real application, these secrets and config values would be provided
+# via ENV vars or similar, but we've inlined everything here for simplicity
+FIDESOPS_URL = "http://localhost:8080"
+ROOT_CLIENT_ID = "fidesopsadmin"
+ROOT_CLIENT_SECRET = "fidesopsadminsecret"
+FIDESOPS_USERNAME = "fidesopsuser"
+FIDESOPS_PASSWORD = "fidesops1A!"
+POSTGRES_SERVER = "db"
+POSTGRES_USER = "postgres"
+POSTGRES_PASSWORD = "postgres"
+POSTGRES_PORT = "5432"
+
+
 def get_access_token(client_id, client_secret):
     """
     Authorize with fidesops via OAuth.
 
     Returns a valid access token if successful, or throws an error otherwise.
 
-    See http://localhost:8000/docs#/OAuth/acquire_access_token_api_v1_oauth_token_post
+    See http://localhost:8080/docs#/OAuth/acquire_access_token_api_v1_oauth_token_post
     """
     data = {
         "grant_type": "client_credentials",
@@ -42,7 +55,8 @@ def get_access_token(client_id, client_secret):
             return access_token
 
     raise RuntimeError(
-        f"fidesops oauth login failed! response.status_code={response.status_code}, response.json()={response.json()}"
+        f"fidesops oauth login failed! response.status_code={response.status_code}, response.json()={response.json()}",
+        response,
     )
 
 
@@ -57,31 +71,43 @@ def create_oauth_client(access_token):
 
     Returns the response JSON if successful, or throws an error otherwise.
 
-    See http://localhost:8000/docs#/OAuth/acquire_access_token_api_v1_oauth_token_post
+    See http://localhost:8080/docs#/OAuth/acquire_access_token_api_v1_oauth_token_post
     """
     scopes_data = [
         "client:create",
-        "client:update",
-        "client:read",
         "client:delete",
-        "policy:create_or_update",
-        "policy:read",
-        "policy:delete",
+        "client:read",
+        "client:update",
+        "config:read",
         "connection:create_or_update",
-        "connection:read",
         "connection:delete",
-        "privacy-request:create",
-        "privacy-request:read",
-        "privacy-request:delete",
-        "rule:create_or_update",
-        "rule:read",
-        "rule:delete",
-        "storage:create_or_update",
-        "storage:read",
-        "storage:delete",
+        "connection:read",
         "dataset:create_or_update",
-        "dataset:read",
         "dataset:delete",
+        "dataset:read",
+        "encryption:exec",
+        "policy:create_or_update",
+        "policy:delete",
+        "policy:read",
+        "privacy-request:delete",
+        "privacy-request:read",
+        "privacy-request:resume",
+        "privacy-request:review",
+        "rule:create_or_update",
+        "rule:delete",
+        "rule:read",
+        "saas_config:create_or_update",
+        "saas_config:delete",
+        "saas_config:read",
+        "scope:read",
+        "storage:create_or_update",
+        "storage:delete",
+        "storage:read",
+        "user:create",
+        "user:delete",
+        "webhook:create_or_update",
+        "webhook:delete",
+        "webhook:read",
     ]
     response = requests.post(
         f"{FIDESOPS_URL}/api/v1/oauth/client",
@@ -96,7 +122,36 @@ def create_oauth_client(access_token):
             return client
 
     raise RuntimeError(
-        f"fidesops oauth client creation failed! response.status_code={response.status_code}, response.json()={response.json()}"
+        f"fidesops oauth client creation failed! response.status_code={response.status_code}, response.json()={response.json()}",
+        response,
+    )
+
+
+def create_user(username, password, access_token):
+    """
+    Create a new User in fidesops.
+
+    Returns the response JSON if successful, or throws an error otherwise.
+
+    See http://localhost:8080/docs#/Users/create_user_api_v1_user_post
+    """
+    user_data = {"username": username, "password": password}
+
+    response = requests.post(
+        f"{FIDESOPS_URL}/api/v1/user",
+        headers=oauth_headers(access_token=access_token),
+        json=user_data,
+    )
+
+    if response.ok:
+        user = response.json()
+        if user["id"]:
+            logger.info(f"Created fidesops user '{username}' via /api/v1/user")
+            return user
+
+    raise RuntimeError(
+        f"fidesops user creation failed! response.status_code={response.status_code}, response.json()={response.json()}",
+        response,
     )
 
 
@@ -106,7 +161,7 @@ def create_postgres_connection(key, access_token):
 
     Returns the response JSON if successful, or throws an error otherwise.
 
-    See http://localhost:8000/docs#/Connections/put_connections_api_v1_connection_put
+    See http://localhost:8080/docs#/Connections/put_connections_api_v1_connection_put
     """
     connection_create_data = [
         {
@@ -131,7 +186,8 @@ def create_postgres_connection(key, access_token):
             return response.json()
 
     raise RuntimeError(
-        f"fidesops connection creation failed! response.status_code={response.status_code}, response.json()={response.json()}"
+        f"fidesops connection creation failed! response.status_code={response.status_code}, response.json()={response.json()}",
+        response,
     )
 
 
@@ -143,7 +199,7 @@ def configure_postgres_connection(
 
     Returns the response JSON if successful, or throws an error otherwise.
 
-    See http://localhost:8000/docs#/Connections/put_connection_config_secrets_api_v1_connection__connection_key__secret_put
+    See http://localhost:8080/docs#/Connections/put_connection_config_secrets_api_v1_connection__connection_key__secret_put
     """
     connection_secrets_data = {
         "host": host,
@@ -166,7 +222,8 @@ def configure_postgres_connection(
             return response.json()
 
     raise RuntimeError(
-        f"fidesops connection configuration failed! response.status_code={response.status_code}, response.json()={response.json()}"
+        f"fidesops connection configuration failed! response.status_code={response.status_code}, response.json()={response.json()}",
+        response,
     )
 
 
@@ -179,7 +236,7 @@ def validate_dataset(connection_key, yaml_path, access_token):
 
     Returns the response JSON if successful, or throws an error otherwise.
 
-    See http://localhost:8000/docs#/Datasets/validate_dataset_api_v1_connection__connection_key__validate_dataset_put
+    See http://localhost:8080/docs#/Datasets/validate_dataset_api_v1_connection__connection_key__validate_dataset_put
     """
 
     with open(yaml_path, "r") as file:
@@ -201,11 +258,13 @@ def validate_dataset(connection_key, yaml_path, access_token):
             return response.json()
         else:
             raise RuntimeError(
-                f"fidesops dataset is not traversable! traversal_details={traversal_details}"
+                f"fidesops dataset is not traversable! traversal_details={traversal_details}",
+                response,
             )
 
     raise RuntimeError(
-        f"fidesops dataset validation failed! response.status_code={response.status_code}, response.json()={response.json()}"
+        f"fidesops dataset validation failed! response.status_code={response.status_code}, response.json()={response.json()}",
+        response,
     )
 
 
@@ -218,7 +277,7 @@ def create_dataset(connection_key, yaml_path, access_token):
 
     Returns the response JSON if successful, or throws an error otherwise.
 
-    See http://localhost:8000/docs#/Datasets/put_datasets_api_v1_connection__connection_key__dataset_put
+    See http://localhost:8080/docs#/Datasets/put_datasets_api_v1_connection__connection_key__dataset_put
     """
 
     with open(yaml_path, "r") as file:
@@ -240,7 +299,8 @@ def create_dataset(connection_key, yaml_path, access_token):
             return response.json()
 
     raise RuntimeError(
-        f"fidesops dataset creation failed! response.status_code={response.status_code}, response.json()={response.json()}"
+        f"fidesops dataset creation failed! response.status_code={response.status_code}, response.json()={response.json()}",
+        response,
     )
 
 
@@ -250,7 +310,7 @@ def create_local_storage(key, format, access_token):
 
     Returns the response JSON if successful, or throws an error otherwise.
 
-    See http://localhost:8000/docs#/Storage/put_config_api_v1_storage_config_put
+    See http://localhost:8080/docs#/Storage/put_config_api_v1_storage_config_put
     """
     storage_create_data = [
         {
@@ -278,7 +338,8 @@ def create_local_storage(key, format, access_token):
             return response.json()
 
     raise RuntimeError(
-        f"fidesops storage creation failed! response.status_code={response.status_code}, response.json()={response.json()}"
+        f"fidesops storage creation failed! response.status_code={response.status_code}, response.json()={response.json()}",
+        response,
     )
 
 
@@ -288,7 +349,7 @@ def create_policy(key, access_token):
 
     Returns the response JSON if successful, or throws an error otherwise.
 
-    See http://localhost:8000/docs#/Policy/create_or_update_policies_api_v1_policy_put
+    See http://localhost:8080/docs#/Policy/create_or_update_policies_api_v1_policy_put
     """
 
     policy_create_data = [
@@ -310,7 +371,8 @@ def create_policy(key, access_token):
             return response.json()
 
     raise RuntimeError(
-        f"fidesops policy creation failed! response.status_code={response.status_code}, response.json()={response.json()}"
+        f"fidesops policy creation failed! response.status_code={response.status_code}, response.json()={response.json()}",
+        response,
     )
 
 
@@ -320,7 +382,7 @@ def delete_policy_rule(policy_key, key, access_token):
 
     Returns the response JSON.
 
-    See http://localhost:8000/docs#/Policy/delete_rule_api_v1_policy__policy_key__rule__rule_key__delete
+    See http://localhost:8080/docs#/Policy/delete_rule_api_v1_policy__policy_key__rule__rule_key__delete
     """
     return requests.delete(
         f"{FIDESOPS_URL}/api/v1/policy/{policy_key}/rule/{key}",
@@ -329,7 +391,12 @@ def delete_policy_rule(policy_key, key, access_token):
 
 
 def create_policy_rule(
-    policy_key, key, action_type, storage_destination_key, masking_strategy, access_token
+    policy_key,
+    key,
+    action_type,
+    storage_destination_key,
+    masking_strategy,
+    access_token,
 ):
     """
     Create a policy rule to either access data and upload to a storage
@@ -337,7 +404,7 @@ def create_policy_rule(
 
     Returns the response JSON if successful, or throws an error otherwise.
 
-    See http://localhost:8000/docs#/Policy/create_or_update_rules_api_v1_policy__policy_key__rule_put
+    See http://localhost:8080/docs#/Policy/create_or_update_rules_api_v1_policy__policy_key__rule_put
     """
 
     rule_create_data = [
@@ -364,7 +431,8 @@ def create_policy_rule(
             return response.json()
 
     raise RuntimeError(
-        f"fidesops policy rule creation failed! response.status_code={response.status_code}, response.json()={response.json()}"
+        f"fidesops policy rule creation failed! response.status_code={response.status_code}, response.json()={response.json()}",
+        response,
     )
 
 
@@ -374,7 +442,7 @@ def create_policy_rule_target(policy_key, rule_key, data_category, access_token)
 
     Returns the response JSON if successful, or throws an error otherwise.
 
-    See http://localhost:8000/docs#/Policy/create_or_update_rule_targets_api_v1_policy__policy_key__rule__rule_key__target_put
+    See http://localhost:8080/docs#/Policy/create_or_update_rule_targets_api_v1_policy__policy_key__rule__rule_key__target_put
     """
 
     target_create_data = [
@@ -397,7 +465,8 @@ def create_policy_rule_target(policy_key, rule_key, data_category, access_token)
             return response.json()
 
     raise RuntimeError(
-        f"fidesops policy rule target creation failed! response.status_code={response.status_code}, response.json()={response.json()}"
+        f"fidesops policy rule target creation failed! response.status_code={response.status_code}, response.json()={response.json()}",
+        response,
     )
 
 
@@ -407,7 +476,7 @@ def create_privacy_request(email, policy_key, access_token):
 
     Returns the response JSON if successful, or throws an error otherwise.
 
-    See http://localhost:8000/docs#/Privacy%20Requests/create_privacy_request_api_v1_privacy_request_post
+    See http://localhost:8080/docs#/Privacy%20Requests/create_privacy_request_api_v1_privacy_request_post
     """
 
     privacy_request_data = [
@@ -432,8 +501,10 @@ def create_privacy_request(email, policy_key, access_token):
             return response.json()
 
     raise RuntimeError(
-        f"fidesops privacy request creation failed! response.status_code={response.status_code}, response.json()={response.json()}"
+        f"fidesops privacy request creation failed! response.status_code={response.status_code}, response.json()={response.json()}",
+        response,
     )
+
 
 def print_results(privacy_request_id):
     """
@@ -442,7 +513,9 @@ def print_results(privacy_request_id):
     """
     results_path = f"fides_uploads/{privacy_request_id}.json"
     wait_time = 0
-    print(f"Waiting for fidesops privacy request results to upload to {results_path}...")
+    print(
+        f"Waiting for fidesops privacy request results to upload to {results_path}..."
+    )
     while wait_time < 5:
         if exists(results_path):
             requests.get(f"{FIDESOPS_URL}/health")
@@ -457,26 +530,121 @@ def print_results(privacy_request_id):
             time.sleep(0.1)
             wait_time += 0.1
 
-    raise RuntimeError(
-        f"fidesops privacy requests failed to upload to {results_path}!"
+    raise RuntimeError(f"fidesops privacy requests failed to upload to {results_path}!")
+
+
+def setup_defaults(access_token):
+    """
+    Setup default values so that fidesops is ready to use, including:
+      1. A default user for the Admin UI
+      2. A default connection to the Postgres database
+      3. A `default_access_policy` for submitting access requests
+      4. A `default_erasure_policy` for submitting erasure requests
+    """
+    logger.info("Setting up default user & policies...")
+
+    # Create the default user
+    try:
+        create_user(
+            username=FIDESOPS_USERNAME,
+            password=FIDESOPS_PASSWORD,
+            access_token=access_token,
+        )
+    except RuntimeError as err:
+        # Catch expected 400 errors when the default user has already been created
+        (message, response) = err.args
+        if (
+            message is not None
+            and response is not None
+            and response.status_code == 400
+            and response.json()["detail"] == "Username already exists."
+        ):
+            logger.info(
+                f"fidesops user '{FIDESOPS_USERNAME}' already exists /api/v1/user"
+            )
+        else:
+            raise err
+
+    # Create the default connection to our PostgreSQL database
+    create_postgres_connection(key="flaskr_postgres", access_token=access_token)
+    configure_postgres_connection(
+        key="flaskr_postgres",
+        host=POSTGRES_SERVER,
+        port=POSTGRES_PORT,
+        dbname="flaskr",
+        username=POSTGRES_USER,
+        password=POSTGRES_PASSWORD,
+        access_token=access_token,
+    )
+
+    # Configure default local storage config to upload the results
+    create_local_storage(
+        key="default_storage",
+        format="json",
+        access_token=access_token,
+    )
+
+    # Create a default access policy that returns user.provided.identifiable.contact
+    create_policy(
+        key="default_access_policy",
+        access_token=access_token,
+    )
+    delete_policy_rule(
+        policy_key="default_access_policy",
+        key="default_access_rule",
+        access_token=access_token,
+    )
+    create_policy_rule(
+        policy_key="default_access_policy",
+        key="default_access_rule",
+        action_type="access",
+        storage_destination_key="default_storage",
+        masking_strategy=None,
+        access_token=access_token,
+    )
+    create_policy_rule_target(
+        policy_key="default_access_policy",
+        rule_key="default_access_rule",
+        data_category="user.provided.identifiable.contact",
+        access_token=access_token,
+    )
+
+    # Create a default erasure policy that masks user.provided.identifiable.contact
+    create_policy(
+        key="default_erasure_policy",
+        access_token=access_token,
+    )
+    delete_policy_rule(
+        policy_key="default_erasure_policy",
+        key="default_erasure_rule",
+        access_token=access_token,
+    )
+    create_policy_rule(
+        policy_key="default_erasure_policy",
+        key="default_erasure_rule",
+        action_type="erasure",
+        storage_destination_key=None,
+        masking_strategy={"strategy": "hmac", "configuration": {}},
+        access_token=access_token,
+    )
+    create_policy_rule_target(
+        policy_key="default_erasure_policy",
+        rule_key="default_erasure_rule",
+        data_category="user.provided.identifiable.contact",
+        access_token=access_token,
     )
 
 
 if __name__ == "__main__":
     # If --test is provided, enable a flag to provide more detailed output
     test_mode = False
-    if len(sys.argv) > 1 and sys.argv[1] == "--test":
+    if len(sys.argv) > 1 and "--test" in sys.argv:
         test_mode = True
 
-    # NOTE: In a real application, these secrets and config values would be provided
-    # via ENV vars or similar, but we've inlined everything here for simplicity
-    FIDESOPS_URL = "http://localhost:8000"
-    ROOT_CLIENT_ID = "fidesopsadmin"
-    ROOT_CLIENT_SECRET = "fidesopsadminsecret"
-    POSTGRES_SERVER = "db"
-    POSTGRES_USER = "postgres"
-    POSTGRES_PASSWORD = "postgres"
-    POSTGRES_PORT = "5432"
+    # If --setup-only is provided, exit after setting up the default data
+    setup_only = False
+    if len(sys.argv) > 1 and "--setup-only" in sys.argv:
+        setup_only = True
 
     if test_mode:
         logging.basicConfig(level=logging.INFO)
@@ -487,6 +655,8 @@ if __name__ == "__main__":
     print(f"  FIDESOPS_URL = {FIDESOPS_URL}")
     print(f"  ROOT_CLIENT_ID = {ROOT_CLIENT_ID}")
     print(f"  ROOT_CLIENT_SECRET = {ROOT_CLIENT_SECRET}")
+    print(f"  FIDESOPS_USERNAME = {FIDESOPS_USERNAME}")
+    print(f"  FIDESOPS_PASSWORD = {FIDESOPS_PASSWORD}")
     print(f"  POSTGRES_SERVER = {POSTGRES_SERVER}")
     print(f"  POSTGRES_USER = {POSTGRES_USER}")
     print(f"  POSTGRES_PASSWORD = {POSTGRES_PASSWORD}")
@@ -506,6 +676,7 @@ if __name__ == "__main__":
         except requests.ConnectionError:
             time.sleep(1)
 
+    # Create a new OAuth client every time to fetch an access token (not efficient, but it's a demo!)
     root_token = get_access_token(
         client_id=ROOT_CLIENT_ID, client_secret=ROOT_CLIENT_SECRET
     )
@@ -514,32 +685,12 @@ if __name__ == "__main__":
         client_id=client["client_id"], client_secret=client["client_secret"]
     )
 
-    # Connect to our PostgreSQL database
-    if test_mode:
-        print("Press [enter] to continue...")
-        input()
+    # Setup the default values: user, policies, connection, etc.
+    setup_defaults(access_token=access_token)
 
-    create_postgres_connection(key="flaskr_postgres", access_token=access_token)
-    configure_postgres_connection(
-        key="flaskr_postgres",
-        host=POSTGRES_SERVER,
-        port=POSTGRES_PORT,
-        dbname="flaskr",
-        username=POSTGRES_USER,
-        password=POSTGRES_PASSWORD,
-        access_token=access_token,
-    )
-
-    # Configure a storage config to upload the results
-    if test_mode:
-        print("Press [enter] to continue...")
-        input()
-
-    create_local_storage(
-        key="example_storage",
-        format="json",
-        access_token=access_token,
-    )
+    # Exit now if --setup-only was provided to this runner
+    if setup_only:
+        exit(0)
 
     while True:
         # Upload the dataset YAML for our PostgreSQL schema
@@ -559,16 +710,8 @@ if __name__ == "__main__":
         )
 
         # Create a policy that returns all user data
-        print(
-            "\n\nEnter a list of target data categories for request policy "
-            "[user]"
-        )
-        data_categories = [
-            e.strip()
-            for e in str(
-                input() or "user"
-            ).split(",")
-        ]
+        print("\n\nEnter a list of target data categories for request policy " "[user]")
+        data_categories = [e.strip() for e in str(input() or "user").split(",")]
         create_policy(
             key="example_request_policy",
             access_token=access_token,
@@ -579,10 +722,7 @@ if __name__ == "__main__":
             "\n\nSelect the action type for request policy (access or erasure) [access]"
         )
         action_type = input() or "access"
-        masking_strategy = {
-            "strategy": "hmac",
-            "configuration": {}
-        }
+        masking_strategy = {"strategy": "hmac", "configuration": {}}
 
         # Delete any existing policy rule so we can reconfigure it based on input
         delete_policy_rule(
@@ -594,7 +734,7 @@ if __name__ == "__main__":
             policy_key="example_request_policy",
             key="example_policy_rule",
             action_type=action_type,
-            storage_destination_key="example_storage",
+            storage_destination_key="default_storage",
             masking_strategy=masking_strategy,
             access_token=access_token,
         )

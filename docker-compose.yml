@@ -20,9 +20,9 @@ services:
       - db
     command: fidesctl webserver
     expose:
-      - 8080
+      - 9090
     ports:
-      - "8080:8080"
+      - "9090:8080"
     environment:
       - FIDESCTL__API__DATABASE_URL=postgresql://postgres:postgres@db:5432/fidesctl
 
@@ -35,7 +35,7 @@ services:
       - "6379:6379"
 
   fidesops:
-    image: ethyca/fidesops:1.2.0
+    image: ethyca/fidesops:1.3.0-24-gcc6b8bd
     depends_on:
       - db
       - redis
@@ -43,13 +43,14 @@ services:
     volumes:
       - ./fides_uploads:/fidesops/fides_uploads
     expose:
-      - 8000
+      - 8080
     ports:
-      - "8000:8080"
+      - "8080:8080"
     environment:
       - FIDESOPS__SECURITY__APP_ENCRYPTION_KEY=QLMI5I0xLWUXE4JN4Asnba79JiBHWWM3
       - FIDESOPS__SECURITY__OAUTH_ROOT_CLIENT_ID=fidesopsadmin
       - FIDESOPS__SECURITY__OAUTH_ROOT_CLIENT_SECRET=fidesopsadminsecret
+      - FIDESOPS__SECURITY__CORS_ORIGINS="http://localhost,http://localhost:4000,http://localhost:3000,http://localhost:8080"
       - FIDESOPS__DATABASE__SERVER=db
       - FIDESOPS__DATABASE__USER=postgres
       - FIDESOPS__DATABASE__PASSWORD=postgres
@@ -58,6 +59,30 @@ services:
       - FIDESOPS__REDIS__HOST=redis
       - FIDESOPS__REDIS__PORT=6379
       - FIDESOPS__REDIS__PASSWORD=redispass
+
+  fidesops-privacycenter:
+    build: ./fides_privacy_center
+    image: ethyca/fidesops-privacycenter
+    depends_on:
+      - fidesops
+    # Mount fides_privacy_center/config directory to allow live editing of the privacy center
+    volumes:
+      - ./fides_privacy_center/config:/fidesops/clients/privacy-center/config
+      - ./flaskr/static:/fidesops/clients/privacy-center/public/static
+    expose:
+      - 4000
+    ports:
+      - "4000:3000"
+
+  fidesops-adminui:
+    build: ./fides_admin_ui
+    image: ethyca/fidesops-adminui
+    depends_on:
+      - fidesops
+    expose:
+      - 3000
+    ports:
+      - "3000:3000"
 
 volumes:
   postgres:

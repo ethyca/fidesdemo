@@ -1,5 +1,5 @@
 .DEFAULT_GOAL := help
-.PHONY: help install server test fidesctl-evaluate fidesops-request fidesops-test compose-up teardown clean black
+.PHONY: help install server test fidesctl-evaluate fidesops-request fidesops-test compose-up teardown reset-db clean black
 
 help:
 	@echo --------------------
@@ -23,6 +23,8 @@ help:
 	@echo ----
 	@echo teardown - Brings down the docker compose environment
 	@echo ----
+	@echo reset-db - Removes the Postgres database and reinitializes it
+	@echo ----
 	@echo clean - Runs various commands to wipe out everything: the virtual environment, temporary files, docker containers, volumes, etc.
 	@echo ----
 	@echo black - Auto-formats project code with Black
@@ -40,6 +42,8 @@ install: compose-up
 	@./venv/bin/pip install -e .
 	@echo "Initializing Flask database..."
 	FLASK_APP=flaskr FLASK_ENV=development ./venv/bin/flask init-db
+	@echo "Initializing fidesops database..."
+	./venv/bin/python flaskr/fidesops.py --setup-only
 	@echo "Done! Run '. venv/bin/activate' to activate venv"
 
 server: compose-up
@@ -78,19 +82,29 @@ compose-up:
 	@echo "Bringing up docker containers..."
 	@docker-compose up -d
 	@pg_isready --host localhost --port 5432 || (echo "Waiting 5s for Postgres to start..." && sleep 5)
+	@echo "Fidesops running at http://localhost:8080/docs"
+	@echo "Fidesctl running at http://localhost:9090/docs"
+	@echo "Fidesops Privacy Center running at http://localhost:4000"
+	@echo "Fidesops Admin UI running at http://localhost:3000/login"
 
 teardown:
 	@echo "Bringing down docker containers..."
 	@docker-compose down --remove-orphans
 
 reset-db: teardown
-	@echo "Resetting database..."
+	@echo "Removing database..."
 	docker volume rm fidesdemo_postgres
 	@make compose-up
+	@echo "Initializing Flask database..."
 	FLASK_APP=flaskr FLASK_ENV=development ./venv/bin/flask init-db
+	@echo "Initializing fidesops database..."
+	./venv/bin/python flaskr/fidesops.py --setup-only
 
 clean: teardown
 	@echo "Cleaning project files, docker containers, volumes, etc...."
+	@echo "!!!!!!"
+	@echo "WARNING! This will delete *all* local Docker images & volumes, not just those used for fidesdemo!"
+	@echo "!!!!!!"
 	docker system prune -a --volumes
 	rm -rf instance/ venv/ __pycache__/
 	rm -f fides_uploads/*.json

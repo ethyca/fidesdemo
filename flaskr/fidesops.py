@@ -634,6 +634,18 @@ def setup_defaults(access_token):
         access_token=access_token,
     )
 
+    # Upload the dataset at least once
+    validate_dataset(
+        connection_key="flaskr_postgres",
+        yaml_path=".fides/flaskr_postgres_dataset.yml",
+        access_token=access_token,
+    )
+    datasets = create_dataset(
+        connection_key="flaskr_postgres",
+        yaml_path=".fides/flaskr_postgres_dataset.yml",
+        access_token=access_token,
+    )
+
 
 if __name__ == "__main__":
     # If --test is provided, enable a flag to provide more detailed output
@@ -700,12 +712,12 @@ if __name__ == "__main__":
 
         validate_dataset(
             connection_key="flaskr_postgres",
-            yaml_path="fides_resources/flaskr_postgres_dataset.yml",
+            yaml_path=".fides/flaskr_postgres_dataset.yml",
             access_token=access_token,
         )
         datasets = create_dataset(
             connection_key="flaskr_postgres",
-            yaml_path="fides_resources/flaskr_postgres_dataset.yml",
+            yaml_path=".fides/flaskr_postgres_dataset.yml",
             access_token=access_token,
         )
 

@@ -15,7 +15,7 @@ services:
       - POSTGRES_MULTIPLE_DATABASES=flaskr,fidesctl,fidesops
 
   fidesctl:
-    image: ethyca/fidesctl:1.2.0
+    image: ethyca/fidesctl:1.4.2
     depends_on:
       - db
     command: fidesctl webserver
@@ -24,7 +24,11 @@ services:
     ports:
       - "9090:8080"
     environment:
-      - FIDESCTL__API__DATABASE_URL=postgresql://postgres:postgres@db:5432/fidesctl
+      - FIDESCTL__API__DATABASE_USER=postgres
+      - FIDESCTL__API__DATABASE_PASSWORD=postgres
+      - FIDESCTL__API__DATABASE_HOST=db
+      - FIDESCTL__API__DATABASE_PORT=5432
+      - FIDESCTL__API__DATABASE_NAME=fidesctl
 
   redis:
     image: "redis:6.2.5-alpine"
@@ -59,6 +63,7 @@ services:
       - FIDESOPS__REDIS__HOST=redis
       - FIDESOPS__REDIS__PORT=6379
       - FIDESOPS__REDIS__PASSWORD=redispass
+      - FIDESOPS__EXECUTION__REQUIRE_MANUAL_REQUEST_APPROVAL=False
 
   fidesops-privacycenter:
     build: ./fides_privacy_center

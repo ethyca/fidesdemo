@@ -44,11 +44,30 @@ install: compose-up
 	FLASK_APP=flaskr FLASK_ENV=development ./venv/bin/flask init-db
 	@echo "Initializing fidesops database..."
 	./venv/bin/python flaskr/fidesops.py --setup-only
+	@make teardown
 	@echo "Done! Run '. venv/bin/activate' to activate venv"
+	@echo "Run 'make demo' to bring up all services"
+
+demo:
+	@echo "****************************************"
+	@echo "*              FIDES DEMO              *"
+	@echo "*                                      *"
+	@echo "*   (use 'make teardown' to shutdown)  *"
+	@echo "*   (use 'make reset-db' to reset db)  *"
+	@echo "****************************************"
+	@make compose-up
+	@echo "Example eCommerce demo app running at http://localhost:2000 (user: user@example.com, pass: user)"
+	@echo "Opening in browser in 5 seconds..."
+	@sleep 5 && open http://localhost:8080/docs &
+	@sleep 5 && open http://localhost:9090/docs &
+	@sleep 5 && open http://localhost:4000 &
+	@sleep 5 && open http://localhost:3000/login &
+	@sleep 5 && open http://localhost:2000 &
+	@FLASK_APP=flaskr FLASK_ENV=development FLASK_RUN_PORT=2000 ./venv/bin/flask run
 
 server: compose-up
-	@echo "Starting Flask server..."
-	FLASK_APP=flaskr FLASK_ENV=development ./venv/bin/flask run
+	@echo "Starting Flask server... (user: user@example.com, pass: user)"
+	FLASK_APP=flaskr FLASK_ENV=development FLASK_RUN_PORT=2000 ./venv/bin/flask run
 
 test: compose-up
 	@echo "Running pytest..."
@@ -85,7 +104,7 @@ compose-up:
 	@echo "Fidesops running at http://localhost:8080/docs"
 	@echo "Fidesctl running at http://localhost:9090/docs"
 	@echo "Fidesops Privacy Center running at http://localhost:4000"
-	@echo "Fidesops Admin UI running at http://localhost:3000/login"
+	@echo "Fidesops Admin UI running at http://localhost:3000/login (user: fidesopsuser, pass: fidesops1A!)"
 
 teardown:
 	@echo "Bringing down docker containers..."

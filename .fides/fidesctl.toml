@@ -1,0 +1,5 @@
+[cli]
+server_url = "http://localhost:9090"
+
+[user]
+analytics_opt_out = false

@@ -829,6 +829,7 @@ if __name__ == "__main__":
 
     # Exit now if --setup-only was provided to this runner
     if setup_only:
+        print("Finished setup!")
         exit(0)
 
     while True:

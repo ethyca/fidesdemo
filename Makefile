@@ -40,10 +40,9 @@ install: compose-up
 	@echo "Installing project dependencies..."
 	@./venv/bin/pip install -r requirements.txt
 	@./venv/bin/pip install -e .
-	@echo "Initializing Flask database..."
-	FLASK_APP=flaskr FLASK_ENV=development ./venv/bin/flask init-db
-	@echo "Initializing fidesops database..."
-	./venv/bin/python flaskr/fidesops.py --setup-only
+	@echo "Initialize Flask & Fidesops..."
+	@make flaskr-init
+	@make fidesops-init
 	@make teardown
 	@echo "Done! Run '. venv/bin/activate' to activate venv"
 	@echo "Run 'make demo' to bring up all services"
@@ -60,13 +59,13 @@ install: compose-up
 
 
 demo:
-	@echo "****************************************"
-	@echo "*              FIDES DEMO              *"
-	@echo "*                                      *"
-	@echo "*   (use 'make teardown' to shutdown)  *"
-	@echo "*   (use 'make reset-db' to reset db)  *"
-	@echo "****************************************"
-
+	@echo "*************************************************"
+	@echo "*                  FIDES DEMO                   *"
+	@echo "*                                               *"
+	@echo "*       (use 'make teardown' to shutdown)       *"
+	@echo "*       (use 'make reset-db' to reset db)       *"
+	@echo "* (use 'make fidesops-watch' to reload config)  *"
+	@echo "*************************************************"
 	@make compose-up
 	@echo "Example eCommerce demo app running at http://localhost:2000 (user: user@example.com, pass: user)"
 	@echo "Opening in browser in 5 seconds..."
@@ -76,6 +75,7 @@ demo:
 	@sleep 5 && open http://localhost:3000/login &
 	@sleep 5 && open http://localhost:2000 &
 	@FLASK_APP=flaskr FLASK_ENV=development FLASK_RUN_PORT=2000 ./venv/bin/flask run
+
 
 server: compose-up
 	@echo "Starting Flask server... (user: user@example.com, pass: user)"
@@ -95,7 +95,10 @@ fidesctl-evaluate: compose-up
 
 fidesctl-export-datamap: compose-up
 	@echo "Exporting datamap from fidesctl..."
+	rm -f .fides/*.xlsx
+	./venv/bin/fidesctl apply
 	./venv/bin/fidesctl export datamap
+	open .fides/*.xlsx
 
 fidesctl-generate-dataset: compose-up
 	@echo "Generating dataset with fidesctl..."
@@ -121,6 +124,12 @@ fidesops-test: compose-up
 	@echo "Configuring fidesops in test mode to run an example request..."
 	./venv/bin/python flaskr/fidesops.py --test
 
+fidesops-watch:
+	@echo "Setting up watchdog on .fides/ directory to re-initialize fidesops..."
+	@./venv/bin/watchmedo shell-command \
+	  --command="make fidesops-init" \
+	  .fides/
+
 ####################
 # Utils
 ####################
@@ -142,9 +151,16 @@ reset-db: teardown
 	@echo "Removing database..."
 	docker volume rm fidesdemo_postgres
 	@make compose-up
+	@make flaskr-init
+	@make fidesops-init
+	@make teardown
+
+flaskr-init:
 	@echo "Initializing Flask database..."
 	FLASK_APP=flaskr FLASK_ENV=development ./venv/bin/flask init-db
-	@echo "Initializing fidesops database..."
+
+fidesops-init:
+	@echo "Initializing fidesops..."
 	./venv/bin/python flaskr/fidesops.py --setup-only
 
 clean: teardown

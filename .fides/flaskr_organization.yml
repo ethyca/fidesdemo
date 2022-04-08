@@ -2,7 +2,7 @@ organization:
   - fides_key: default_organization
     name: Fides Demo
     description: An example Organization created for the Fides Demo
-    security_policy: https://ethyca.com/privacy
+    security_policy: https://privacy.ethyca.com/
     controller:
       name: Dave L. Epper
       address: 1 Acme Pl. New York, NY

@@ -1,5 +1,7 @@
 [cli]
-server_url = "http://localhost:9090"
+server_protocol = "http"
+server_host = "localhost"
+server_port = 9090
 analytics_id = "internal"
 
 [user]

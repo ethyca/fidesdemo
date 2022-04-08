@@ -109,6 +109,10 @@ fidesctl-scan-system: compose-up
 	@echo "Scanning system coverage with fidesctl..."
 	./venv/bin/fidesctl scan system aws
 
+####################
+# fidesops
+####################
+
 fidesops-request: compose-up
 	@echo "Configuring fidesops and running an example request..."
 	./venv/bin/python flaskr/fidesops.py

@@ -64,6 +64,12 @@ saas_config:
             incremental_param: offset
             increment_by: 1000
             limit: 10000
+        postprocessors:
+          - strategy: filter
+            configuration:
+              field: from_email
+              value:
+                identity: email
   - name: member
     requests:
       read:

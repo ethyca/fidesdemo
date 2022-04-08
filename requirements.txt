@@ -1,6 +1,6 @@
 black>=21.9b0
 click>=7.0.0
-fidesctl[postgres,aws]==1.4.2
+fidesctl[postgres,aws]==1.5.0
 Flask>=1.1.4
 Flask-SQLAlchemy>=2.5.1
 psycopg2>=2.9.1

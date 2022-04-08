@@ -47,6 +47,17 @@ install: compose-up
 	@make teardown
 	@echo "Done! Run '. venv/bin/activate' to activate venv"
 	@echo "Run 'make demo' to bring up all services"
+	@echo "****************************************"
+	@echo "* TODO: Remove these manual steps!     *"
+	@echo "****************************************"
+	@echo "To use 'fidesctl generate system aws' set the following:"
+	@echo "export AWS_ACCESS_KEY_ID=..."
+	@echo "export AWS_SECRET_ACCESS_KEY=..."
+	@echo "export AWS_DEFAULT_REGION=..."
+	@echo "To use fidesops admin UI run the following:"
+	@echo "sudo -- sh -c -e \"echo '127.0.0.1 fidesops' >> /etc/hosts\""
+	@echo "Don't forget to remove this line from /etc/hosts afterwards!"
+
 
 demo:
 	@echo "****************************************"
@@ -55,6 +66,7 @@ demo:
 	@echo "*   (use 'make teardown' to shutdown)  *"
 	@echo "*   (use 'make reset-db' to reset db)  *"
 	@echo "****************************************"
+
 	@make compose-up
 	@echo "Example eCommerce demo app running at http://localhost:2000 (user: user@example.com, pass: user)"
 	@echo "Opening in browser in 5 seconds..."
@@ -89,14 +101,12 @@ fidesctl-generate-dataset: compose-up
 	@echo "Generating dataset with fidesctl..."
 	./venv/bin/fidesctl generate dataset postgresql://postgres:postgres@localhost:5432/flaskr .fides/generated_dataset.yml
 
-fidesctl-generate-systems: compose-up
+fidesctl-generate-system: compose-up
 	@echo "Generating systems with fidesctl..."
-	@bash setup_aws_env.sh
 	./venv/bin/fidesctl generate system aws .fides/generated_aws_systems.yml
 
-fidesctl-scan-systems: compose-up
+fidesctl-scan-system: compose-up
 	@echo "Scanning system coverage with fidesctl..."
-	@bash setup_aws_env.sh
 	./venv/bin/fidesctl scan system aws
 
 fidesops-request: compose-up

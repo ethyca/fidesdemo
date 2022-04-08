@@ -1,5 +1,5 @@
 # TODO: update to stable image
-FROM ethyca/fidesops:1.3.0-24-gcc6b8bd
+FROM ethyca/fidesops:1.3.0-38-g351fb23
 
 # Install node v16 on top of the fideops image
 RUN \

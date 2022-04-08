@@ -1,5 +1,4 @@
-# TODO: update to stable image
-FROM ethyca/fidesops:1.3.0-38-g351fb23
+FROM ethyca/fidesops:1.4.0
 
 # Install node v16 on top of the fideops image
 RUN \
@@ -11,8 +10,5 @@ WORKDIR /fidesops/clients/privacy-center
 RUN npm install
 
 COPY ./config /fidesops/clients/privacy-center/config
-
-# TODO: optimize production build?
-# RUN npm run build
 
 CMD ["npm", "run", "dev"]

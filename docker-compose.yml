@@ -39,7 +39,7 @@ services:
       - "6379:6379"
 
   fidesops:
-    image: ethyca/fidesops:1.3.0-38-g351fb23
+    image: ethyca/fidesops:1.4.0
     depends_on:
       - db
       - redis

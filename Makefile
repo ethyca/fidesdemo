@@ -171,6 +171,7 @@ clean: teardown
 	docker system prune -a --volumes
 	rm -rf instance/ venv/ __pycache__/
 	rm -f fides_uploads/*.json
+	rm -f .fides/*.xlsx
 
 black:
 	@echo "Auto-formatting project code with Black..."

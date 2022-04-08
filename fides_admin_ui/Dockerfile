@@ -1,15 +1,14 @@
-FROM node:16
+FROM ethyca/fidesops:1.4.0
 
-# TODO: update to stable image
-RUN git clone https://github.com/elliotbonneville/fidesops.git /home/node/fidesops
+# Install node v16 on top of the fideops image
+RUN \
+    curl -sL 'https://deb.nodesource.com/setup_16.x' | bash - \
+    && apt-get install -y nodejs
 
-WORKDIR /home/node/fidesops/clients/admin-ui
+WORKDIR /fidesops/clients/admin-ui
 
 RUN npm install
 
-COPY ./.env.development /home/node/fidesops/clients/admin-ui/
-
-# TODO: optimize production build?
-# RUN npm run build
+COPY ./.env.development /fidesops/clients/admin-ui/
 
 CMD ["npm", "run", "dev"]

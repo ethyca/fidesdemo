@@ -3,6 +3,13 @@ system:
     name: Google Analytics
     description: Hosted third party analytics to track and analyze user behaviour
     system_type: Third Party
+    administrating_department: Marketing
+    third_country_transfers:
+    - USA
+    data_protection_impact_assessment:
+      is_required: True
+      progress: Complete
+      link: https://example.org/google_analytics_system_data_protection_impact_assessment
     privacy_declarations:
       # See the Google Analytics documentation for a description of the possible
       # fields collected by the tracker, including page URL, referrer, cookie ID, etc.
@@ -14,9 +21,9 @@ system:
           - user.derived.identifiable.telemetry
           - user.derived.identifiable.location
           - user.derived.nonidentifiable
-        data_use: improve
+        data_use: collect.analytics
         data_subjects:
-          - customer
+          - flaskr_customer
         data_qualifier: aggregated.anonymized.unlinked_pseudonymized.pseudonymized
       # Google Analytics collects the user's IP address and derives geographic dimensions server-side.
       # See https://developers.google.com/analytics/devguides/reporting/realtime/dimsmets/geonetwork
@@ -25,9 +32,9 @@ system:
           - user.derived.identifiable.device.ip_address
           - user.derived.identifiable.location
           - user.derived.identifiable
-        data_use: improve
+        data_use: collect.analytics
         data_subjects:
-          - customer
+          - flaskr_customer
         # With "IP Anonymization" enabled, IP addresses will be pseudonymized in Google Analytics
         # See https://developers.google.com/analytics/devguides/collection/gtagjs/ip-anonymization
         data_qualifier: aggregated.anonymized.unlinked_pseudonymized.pseudonymized

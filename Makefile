@@ -11,7 +11,7 @@ help:
 	@echo ----
 	@echo test - Runs the pytest suite, including using compose-up to start all dependencies
 	@echo ----
-	@echo fidesctl-evaluate - Uses fidesctl to perform a dry policy evaluation of the project manifests in fides_resources/
+	@echo fidesctl-evaluate - Uses fidesctl to perform a dry policy evaluation of the project manifests in .fides/
 	@echo ----
 	@echo fidesctl-generate-dataset - Uses fidesctl to generate an example dataset from the Postgres schema
 	@echo ----
@@ -79,11 +79,25 @@ test: compose-up
 
 fidesctl-evaluate: compose-up
 	@echo "Evaluating policy with fidesctl..."
-	./venv/bin/fidesctl evaluate --dry fides_resources
+	./venv/bin/fidesctl evaluate --dry .fides
+
+fidesctl-export-datamap: compose-up
+	@echo "Exporting datamap from fidesctl..."
+	./venv/bin/fidesctl export datamap
 
 fidesctl-generate-dataset: compose-up
 	@echo "Generating dataset with fidesctl..."
-	./venv/bin/fidesctl generate-dataset postgresql://postgres:postgres@localhost:5432/flaskr example.yml
+	./venv/bin/fidesctl generate dataset postgresql://postgres:postgres@localhost:5432/flaskr .fides/generated_dataset.yml
+
+fidesctl-generate-systems: compose-up
+	@echo "Generating systems with fidesctl..."
+	@bash setup_aws_env.sh
+	./venv/bin/fidesctl generate system aws .fides/generated_aws_systems.yml
+
+fidesctl-scan-systems: compose-up
+	@echo "Scanning system coverage with fidesctl..."
+	@bash setup_aws_env.sh
+	./venv/bin/fidesctl scan system aws
 
 fidesops-request: compose-up
 	@echo "Configuring fidesops and running an example request..."

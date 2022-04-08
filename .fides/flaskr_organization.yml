@@ -1,0 +1,20 @@
+organization:
+  - fides_key: default_organization
+    name: Fides Demo
+    description: An example Organization created for the Fides Demo
+    security_policy: https://ethyca.com/privacy
+    controller:
+      name: Dave L. Epper
+      address: 1 Acme Pl. New York, NY
+      email: controller@acmeinc.com
+      phone: +1 555 555 5555
+    data_protection_officer:
+      name: Preet Ector
+      address: 1 Acme Pl. New York, NY
+      email: dpo@acmeinc.com
+      phone: +1 555 555 5555
+    representative:
+      name: Ann Othername
+      address: 1 Acme Pl. New York, NY
+      email: representative@acmeinc.com
+      phone: +1 555 555 5555

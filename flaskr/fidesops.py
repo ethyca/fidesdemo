@@ -8,11 +8,13 @@ Utility script to configure fidesops with:
 """
 import json
 import logging
+import os
 import secrets
 import sys
 import time
 from datetime import datetime
 from os.path import exists
+from typing import Dict, Any
 
 import requests
 import yaml
@@ -191,6 +193,71 @@ def create_postgres_connection(key, access_token):
     )
 
 
+def create_mailchimp_saas_connection(key, access_token):
+    """
+    Create a connection in fidesops for our Mailchimp Third Party Integration
+
+    Returns the response JSON if successful, or throws an error otherwise.
+
+    See http://localhost:8080/docs#/Connections/put_connections_api_v1_connection_put
+    """
+    connection_create_data = [
+        {
+            "name": key,
+            "key": key,
+            "connection_type": "saas",
+            "access": "write",
+        },
+    ]
+    response = requests.patch(
+        f"{FIDESOPS_URL}/api/v1/connection",
+        headers=oauth_headers(access_token=access_token),
+        json=connection_create_data,
+    )
+
+    if response.ok:
+        connections = (response.json())["succeeded"]
+        if len(connections) > 0:
+            logger.info(
+                f"Created fidesops connection with key={key} via /api/v1/connection"
+            )
+            return response.json()
+
+    raise RuntimeError(
+        f"fidesops connection creation failed! response.status_code={response.status_code}, response.json()={response.json()}",
+        response,
+    )
+
+
+def create_mailchimp_saas_config(key, access_token, yaml_path):
+    """
+    Add the saas config to the Mailchimp connection config.
+
+    Returns the response JSON if successful, or throws an error otherwise.
+
+    """
+
+    with open(yaml_path, "r") as file:
+        config = yaml.safe_load(file).get("saas_config", {})
+
+    response = requests.patch(
+        f"{FIDESOPS_URL}/api/v1/connection/{key}/saas_config",
+        headers=oauth_headers(access_token=access_token),
+        json=config,
+    )
+
+    if response.ok:
+        logger.info(
+            f"Created fidesops connection with key={key} via /api/v1/connection"
+        )
+        return response.json()
+
+    raise RuntimeError(
+        f"fidesops connection creation failed! response.status_code={response.status_code}, response.json()={response.json()}",
+        response,
+    )
+
+
 def configure_postgres_connection(
     key, host, port, dbname, username, password, access_token
 ):
@@ -207,6 +274,38 @@ def configure_postgres_connection(
         "dbname": dbname,
         "username": username,
         "password": password,
+    }
+    response = requests.put(
+        f"{FIDESOPS_URL}/api/v1/connection/{key}/secret",
+        headers=oauth_headers(access_token=access_token),
+        json=connection_secrets_data,
+    )
+
+    if response.ok:
+        if (response.json())["test_status"] != "failed":
+            logger.info(
+                f"Configured fidesops connection secrets via /api/v1/connection/{key}/secret"
+            )
+            return response.json()
+
+    raise RuntimeError(
+        f"fidesops connection configuration failed! response.status_code={response.status_code}, response.json()={response.json()}",
+        response,
+    )
+
+
+def configure_saas_connection(key, domain, username, api_key, access_token):
+    """
+    Configure the connection with the given `key` in fidesops with our Mailchimp saas test credentials.
+
+    Returns the response JSON if successful, or throws an error otherwise.
+
+    See http://localhost:8080/docs#/Connections/put_connection_config_secrets_api_v1_connection__connection_key__secret_put
+    """
+    connection_secrets_data = {
+        "domain": domain,
+        "username": username,
+        "api_key": api_key,
     }
     response = requests.put(
         f"{FIDESOPS_URL}/api/v1/connection/{key}/secret",
@@ -577,6 +676,23 @@ def setup_defaults(access_token):
         access_token=access_token,
     )
 
+    # Create the default connection to our Mailchimp instance
+    create_mailchimp_saas_connection(key="flaskr_mailchimp", access_token=access_token)
+    # Add Mailchimp SaaS Config (only needed for ConnectionConfigs of type "saas")
+    create_mailchimp_saas_config(
+        key="flaskr_mailchimp",
+        access_token=access_token,
+        yaml_path=".fides/mailchimp_config.yml",
+    )
+    # Add mailchimp secrets
+    configure_saas_connection(
+        key="flaskr_mailchimp",
+        domain=os.environ.get("MAILCHIMP_DOMAIN"),
+        username=os.environ.get("MAILCHIMP_USERNAME"),
+        api_key=os.environ.get("MAILCHIMP_API_KEY"),
+        access_token=access_token,
+    )
+
     # Configure default local storage config to upload the results
     create_local_storage(
         key="default_storage",
@@ -634,7 +750,7 @@ def setup_defaults(access_token):
         access_token=access_token,
     )
 
-    # Upload the dataset at least once
+    # Upload the postgres dataset at least once
     validate_dataset(
         connection_key="flaskr_postgres",
         yaml_path=".fides/flaskr_postgres_dataset.yml",
@@ -643,6 +759,17 @@ def setup_defaults(access_token):
     datasets = create_dataset(
         connection_key="flaskr_postgres",
         yaml_path=".fides/flaskr_postgres_dataset.yml",
+        access_token=access_token,
+    )
+    # Upload mailchimp dataset
+    validate_dataset(
+        connection_key="flaskr_mailchimp",
+        yaml_path=".fides/mailchimp_dataset.yml",
+        access_token=access_token,
+    )
+    mailchimp_dataset = create_dataset(
+        connection_key="flaskr_mailchimp",
+        yaml_path=".fides/mailchimp_dataset.yml",
         access_token=access_token,
     )
 

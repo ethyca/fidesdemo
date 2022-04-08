@@ -15,7 +15,7 @@ services:
       - POSTGRES_MULTIPLE_DATABASES=flaskr,fidesctl,fidesops
 
   fidesctl:
-    image: ethyca/fidesctl:1.5.0
+    image: ethyca/fidesctl:1.5.1
     depends_on:
       - db
     command: fidesctl webserver

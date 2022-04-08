@@ -67,13 +67,14 @@ demo:
 	@echo "* (use 'make fidesops-watch' to reload config)  *"
 	@echo "*************************************************"
 	@make compose-up
-	@echo "Example eCommerce demo app running at http://localhost:2000 (user: user@example.com, pass: user)"
+	@echo "Example eCommerce demo app running at http://localhost:2000 (user: exampleuser@ethyca.com, pass: exampleuser)"
 	@echo "Opening in browser in 5 seconds..."
 	@sleep 5 && open http://localhost:8080/docs &
 	@sleep 5 && open http://localhost:9090/docs &
 	@sleep 5 && open http://localhost:4000 &
 	@sleep 5 && open http://localhost:3000/login &
 	@sleep 5 && open http://localhost:2000 &
+	@sleep 6 && open fides_uploads &
 	@FLASK_APP=flaskr FLASK_ENV=development FLASK_RUN_PORT=2000 ./venv/bin/flask run
 
 
@@ -116,6 +117,7 @@ fidesctl-scan-system: compose-up
 # fidesops
 ####################
 
+fidesops-request: export FIDESOPS__EXECUTION__REQUIRE_MANUAL_REQUEST_APPROVAL=False
 fidesops-request: compose-up
 	@echo "Configuring fidesops and running an example request..."
 	./venv/bin/python flaskr/fidesops.py

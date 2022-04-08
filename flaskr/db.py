@@ -60,7 +60,8 @@ def init_db():
         INSERT INTO users (created_at, email, password, first_name, last_name)
         VALUES
             ('2020-01-01 00:00:00', 'admin@example.com', 'pbkdf2:sha256:260000$O87nanbSklOZOMKh$f297bf9daa9f5e2d84c3792c75800204edd2f5a5934bd23988ca840333642321', 'Admin', 'User'),
-            ('2020-01-03 00:00:00', 'user@example.com', 'pbkdf2:sha256:260000$PGcBy5NzZeDdlu0b$a91ee29eefad98920fe47a6ef4d53b5abffe593300f766f02de041af93ae51f8', 'Example', 'User')
+            ('2020-01-03 00:00:00', 'user@example.com', 'pbkdf2:sha256:260000$PGcBy5NzZeDdlu0b$a91ee29eefad98920fe47a6ef4d53b5abffe593300f766f02de041af93ae51f8', 'Example', 'User'),
+            ('2020-01-05 00:00:00', 'exampleuser@ethyca.com', 'pbkdf2:sha256:260000$9dFB0wzju40b2Tds$b5234e559fa26cf028cf4767721d358004a1d60bdcee697686a0747fad3784ec', 'Ethyca', 'User')
         ;
         """,
         """
@@ -74,7 +75,8 @@ def init_db():
         """
         INSERT INTO purchases (created_at, product_id, buyer_id, street_1, street_2, city, state, zip)
         VALUES
-            ('2020-01-04 12:00:00', 1, 2, '123 Example St', 'Apt 123', 'Exampletown', 'NY', '12345')
+            ('2020-01-04 12:00:00', 1, 2, '123 Example St', 'Apt 123', 'Exampletown', 'NY', '12345'),
+            ('2020-01-06 12:00:00', 1, 3, '101 Example Ave', 'Suite 202', 'Exampletown', 'NY', '12345')
         ;
         """,
     ]

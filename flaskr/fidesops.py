@@ -682,7 +682,7 @@ def setup_defaults(access_token):
     create_mailchimp_saas_config(
         key="flaskr_mailchimp",
         access_token=access_token,
-        yaml_path=".fides/mailchimp_config.yml",
+        yaml_path=".fides_saas_config/mailchimp_config.yml",
     )
     # Add mailchimp secrets
     configure_saas_connection(

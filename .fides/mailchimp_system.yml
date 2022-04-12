@@ -1,0 +1,25 @@
+system:
+  - fides_key: mailchimp_system
+    name: Mailchimp
+    description: Hosted third party email service
+    system_type: Third Party
+    administrating_department: Marketing
+    third_country_transfers:
+    - USA
+    data_protection_impact_assessment:
+      is_required: True
+      progress: Complete
+      link: https://example.org/mailchimp_system_data_protection_impact_assessment
+    privacy_declarations:
+      - name: Send transactional emails to customers
+        data_categories:
+          - user.provided.identifiable.contact
+          - user.provided.identifiable
+          - user.derived.identifiable
+          - system.operations
+        data_use: provide.system.operations.e-commerce
+        data_subjects:
+          - flaskr_customer
+        data_qualifier: aggregated.anonymized.unlinked_pseudonymized.pseudonymized.identified
+        dataset_references:
+          - mailchimp_connector_example

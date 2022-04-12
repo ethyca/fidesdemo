@@ -127,9 +127,11 @@ fidesops-test: compose-up
 	./venv/bin/python flaskr/fidesops.py --test
 
 fidesops-watch:
+	@make fidesops-init
 	@echo "Setting up watchdog on .fides/ directory to re-initialize fidesops..."
 	@./venv/bin/watchmedo shell-command \
 	  --command="make fidesops-init" \
+	  --drop \
 	  .fides/
 
 ####################

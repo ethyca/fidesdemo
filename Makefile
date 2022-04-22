@@ -90,10 +90,10 @@ reset-db: teardown
 	FLASK_APP=flaskr FLASK_ENV=development ./venv/bin/flask init-db
 
 clean: teardown
-	@echo "Cleaning project files, docker containers, volumes, etc...."
-	docker system prune -a --volumes
+	@echo "Cleaning project files, venv, pycache..."
 	rm -rf instance/ venv/ __pycache__/
 	rm -f fides_uploads/*.json
+	@echo "To remove all docker artifacts, consider: 'docker prune --help'"
 
 black:
 	@echo "Auto-formatting project code with Black..."

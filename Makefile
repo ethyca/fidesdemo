@@ -89,6 +89,7 @@ reset-db: teardown
 	@make compose-up
 	FLASK_APP=flaskr FLASK_ENV=development ./venv/bin/flask init-db
 
+# make this less dangerous
 clean: teardown
 	@echo "Cleaning project files, docker containers, volumes, etc...."
 	docker system prune -a --volumes

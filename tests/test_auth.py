@@ -30,6 +30,8 @@ def test_register(client, app):
     (
         ("", "", "a", "a", b"Email is required."),
         ("a", "", "a", "a", b"Password is required."),
+        ("a", "a", "", "a", b"First Name is required."),
+        ("a", "a", "a", "", b"Last Name is required."),
         ("admin@example.com", "admin", "a", "a", b"already registered"),
     ),
 )

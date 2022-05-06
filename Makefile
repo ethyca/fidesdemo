@@ -91,9 +91,11 @@ reset-db: teardown
 
 clean: teardown
 	@echo "Cleaning project files, docker containers, volumes, etc...."
-	docker system prune -a --volumes
+	@docker compose down --volumes --rmi all
+	docker system prune
 	rm -rf instance/ venv/ __pycache__/
 	rm -f fides_uploads/*.json
+	@echo For a deeper clean, use "docker system prune -a --volumes"
 
 black:
 	@echo "Auto-formatting project code with Black..."

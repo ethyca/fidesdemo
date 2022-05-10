@@ -25,7 +25,7 @@ def register():
         email = request.form["email"]
         password = request.form["password"]
         first_name = request.form["first_name"]
-        last_name = request.form["first_name"]
+        last_name = request.form["last_name"]
         db = get_db()
         error = None
 

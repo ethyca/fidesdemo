@@ -191,6 +191,7 @@ clean: teardown
 	rm -rf instance/ venv/ __pycache__/
 	rm -f fides_uploads/*.json
 	rm -f .fides/*.xlsx
+	@echo For a deeper clean, use "docker system prune -a --volumes"
 
 black:
 	@echo "Auto-formatting project code with Black..."

@@ -59,20 +59,6 @@ install: preinstall compose-up
 	@make teardown
 	@echo "Done! Run '. venv/bin/activate' to activate venv"
 	@echo "Run 'make demo' to bring up all services"
-	@echo "****************************************"
-	@echo "* TODO: Remove these manual steps!     *"
-	@echo "****************************************"
-	@echo "To use 'fidesctl generate system aws' set the following:"
-	@echo "export AWS_ACCESS_KEY_ID=..."
-	@echo "export AWS_SECRET_ACCESS_KEY=..."
-	@echo "export AWS_DEFAULT_REGION=..."
-	@echo "To use Mailchimp for fidesops set the following:"
-	@echo "export MAILCHIMP_DOMAIN..."
-	@echo "export MAILCHIMP_USERNAME..."
-	@echo "export MAILCHIMP_API_KEY=..."
-	@echo "To use fidesops admin UI run the following:"
-	@echo "sudo -- sh -c -e \"echo '127.0.0.1 fidesops' >> /etc/hosts\""
-	@echo "Don't forget to remove this line from /etc/hosts afterwards!"
 
 
 demo:
@@ -84,6 +70,7 @@ demo:
 	@echo "* (use 'make fidesops-watch' to reload config)  *"
 	@echo "*************************************************"
 	@make compose-up
+	@make fidesops-init
 	@echo "Example eCommerce demo app running at http://localhost:2000 (user: exampleuser@ethyca.com, pass: exampleuser)"
 	@echo "Opening in browser in 5 seconds..."
 	@sleep 5 && open http://localhost:8080/docs &
@@ -122,11 +109,17 @@ fidesctl-generate-dataset: compose-up
 	@echo "Generating dataset with fidesctl..."
 	./venv/bin/fidesctl generate dataset postgresql://postgres:postgres@localhost:6432/flaskr .fides/generated_dataset.yml
 
-fidesctl-generate-system: compose-up
+fidesctl-aws-check-env:
+	@if [ -z "$$AWS_ACCESS_KEY_ID" ] || [ -z "$$AWS_SECRET_ACCESS_KEY" ] || [ -z "$$AWS_DEFAULT_REGION" ]; then\
+		echo "ERROR: must set AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, and AWS_DEFAULT_REGION environment variables!";\
+		exit 1;\
+	fi
+
+fidesctl-generate-system-aws: fidesctl-aws-check-env compose-up
 	@echo "Generating systems with fidesctl..."
 	./venv/bin/fidesctl generate system aws .fides/generated_aws_systems.yml
 
-fidesctl-scan-system: compose-up
+fidesctl-scan-system-aws: fidesctl-aws-check-env compose-up
 	@echo "Scanning system coverage with fidesctl..."
 	./venv/bin/fidesctl scan system aws
 
@@ -142,6 +135,10 @@ fidesops-request: compose-up
 fidesops-test: compose-up
 	@echo "Configuring fidesops in test mode to run an example request..."
 	./venv/bin/python flaskr/fidesops.py --test
+
+fidesops-init:
+	@echo "Initializing fidesops..."
+	./venv/bin/python flaskr/fidesops.py --setup-only
 
 fidesops-watch:
 	@make fidesops-init
@@ -179,10 +176,6 @@ reset-db: teardown
 flaskr-init:
 	@echo "Initializing Flask database..."
 	FLASK_APP=flaskr FLASK_ENV=development ./venv/bin/flask init-db
-
-fidesops-init:
-	@echo "Initializing fidesops..."
-	./venv/bin/python flaskr/fidesops.py --setup-only
 
 clean: teardown
 	@echo "Cleaning project files, docker containers, volumes, etc...."

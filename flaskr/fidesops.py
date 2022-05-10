@@ -676,22 +676,36 @@ def setup_defaults(access_token):
         access_token=access_token,
     )
 
-    # Create the default connection to our Mailchimp instance
-    create_mailchimp_saas_connection(key="flaskr_mailchimp", access_token=access_token)
-    # Add Mailchimp SaaS Config (only needed for ConnectionConfigs of type "saas")
-    create_mailchimp_saas_config(
-        key="flaskr_mailchimp",
-        access_token=access_token,
-        yaml_path=".fides_saas_config/mailchimp_config.yml",
-    )
-    # Add mailchimp secrets
-    configure_saas_connection(
-        key="flaskr_mailchimp",
-        domain=os.environ.get("MAILCHIMP_DOMAIN"),
-        username=os.environ.get("MAILCHIMP_USERNAME"),
-        api_key=os.environ.get("MAILCHIMP_API_KEY"),
-        access_token=access_token,
-    )
+    # Configure Mailchimp connector, if these environment variables are set
+    mailchimp_domain = os.environ.get("MAILCHIMP_DOMAIN")
+    mailchimp_username = os.environ.get("MAILCHIMP_USERNAME")
+    mailchimp_api_key = os.environ.get("MAILCHIMP_API_KEY")
+
+    if mailchimp_domain and mailchimp_username and mailchimp_api_key:
+        # Create the default connection to our Mailchimp instance
+        create_mailchimp_saas_connection(key="flaskr_mailchimp", access_token=access_token)
+
+        # Add Mailchimp SaaS Config (only needed for ConnectionConfigs of type "saas")
+        create_mailchimp_saas_config(
+            key="flaskr_mailchimp",
+            access_token=access_token,
+            yaml_path=".fides_saas_config/mailchimp_config.yml",
+        )
+
+        # Add mailchimp secrets
+        configure_saas_connection(
+            key="flaskr_mailchimp",
+            domain=mailchimp_domain,
+            username=mailchimp_username,
+            api_key=mailchimp_api_key,
+            access_token=access_token,
+        )
+    else:
+        print("Skipping Mailchimp connector setup. To enable Mailchimp, set the following environment variables:")
+        print("  MAILCHIMP_DOMAIN")
+        print("  MAILCHIMP_USERNAME")
+        print("  MAILCHIMP_API_KEY")
+
 
     # Configure default local storage config to upload the results
     create_local_storage(

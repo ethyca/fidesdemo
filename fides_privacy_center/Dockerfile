@@ -1,4 +1,4 @@
-FROM ethyca/fidesops:1.4.0
+FROM ethyca/fidesops:1.4.1
 
 # Install node v16 on top of the fideops image
 RUN \

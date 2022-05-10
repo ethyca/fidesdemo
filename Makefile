@@ -5,6 +5,8 @@ help:
 	@echo --------------------
 	@echo Development Targets:
 	@echo ----
+	@echo preinstall - Checks versions of dependencies for Python, Docker, etc.
+	@echo ----
 	@echo install - Creates a virtual environment, installs, and initializes the project, including docker compose containers
 	@echo ----
 	@echo server - Runs the Flask server in development mode, including using compose-up to start all dependencies
@@ -34,13 +36,24 @@ help:
 # Dev
 ####################
 
-install: compose-up
+preinstall:
+	@echo "*************************************************"
+	@echo "*                  FIDES DEMO                   *"
+	@echo "*************************************************"
+	@echo "Checking versions of fidesdemo dependencies:"
+	@python3 --version
+	@docker --version
+	@docker-compose --version
+	@pg_config --version
+
+install: preinstall compose-up
 	@echo "Creating virtual environment ./venv..."
 	@python3 -m venv venv
-	@echo "Installing project dependencies..."
-	@./venv/bin/pip install -r requirements.txt
-	@./venv/bin/pip install -e .
-	@echo "Initialize Flask & Fidesops..."
+	@echo "Installing project dependencies using pip version:"
+	@./venv/bin/pip --version
+	./venv/bin/pip install -r requirements.txt
+	./venv/bin/pip install -e .
+	@echo "Initializing Flask & Fidesops..."
 	@make flaskr-init
 	@make fidesops-init
 	@make teardown
@@ -53,6 +66,10 @@ install: compose-up
 	@echo "export AWS_ACCESS_KEY_ID=..."
 	@echo "export AWS_SECRET_ACCESS_KEY=..."
 	@echo "export AWS_DEFAULT_REGION=..."
+	@echo "To use Mailchimp for fidesops set the following:"
+	@echo "export MAILCHIMP_DOMAIN..."
+	@echo "export MAILCHIMP_USERNAME..."
+	@echo "export MAILCHIMP_API_KEY=..."
 	@echo "To use fidesops admin UI run the following:"
 	@echo "sudo -- sh -c -e \"echo '127.0.0.1 fidesops' >> /etc/hosts\""
 	@echo "Don't forget to remove this line from /etc/hosts afterwards!"
@@ -103,7 +120,7 @@ fidesctl-export-datamap: compose-up
 
 fidesctl-generate-dataset: compose-up
 	@echo "Generating dataset with fidesctl..."
-	./venv/bin/fidesctl generate dataset postgresql://postgres:postgres@localhost:5432/flaskr .fides/generated_dataset.yml
+	./venv/bin/fidesctl generate dataset postgresql://postgres:postgres@localhost:6432/flaskr .fides/generated_dataset.yml
 
 fidesctl-generate-system: compose-up
 	@echo "Generating systems with fidesctl..."
@@ -141,7 +158,7 @@ fidesops-watch:
 compose-up:
 	@echo "Bringing up docker containers..."
 	@docker-compose up -d
-	@pg_isready --host localhost --port 5432 || (echo "Waiting 5s for Postgres to start..." && sleep 5)
+	@pg_isready --host localhost --port 6432 || (echo "Waiting 5s for Postgres to start..." && sleep 5)
 	@echo "Fidesops running at http://localhost:8080/docs"
 	@echo "Fidesctl running at http://localhost:9090/docs"
 	@echo "Fidesops Privacy Center running at http://localhost:4000"
@@ -169,10 +186,8 @@ fidesops-init:
 
 clean: teardown
 	@echo "Cleaning project files, docker containers, volumes, etc...."
-	@echo "!!!!!!"
-	@echo "WARNING! This will delete *all* local Docker images & volumes, not just those used for fidesdemo!"
-	@echo "!!!!!!"
-	docker system prune -a --volumes
+	docker-compose down --remove-orphans --volumes --rmi all
+	docker system prune --force
 	rm -rf instance/ venv/ __pycache__/
 	rm -f fides_uploads/*.json
 	rm -f .fides/*.xlsx

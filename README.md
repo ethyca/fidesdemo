@@ -14,12 +14,14 @@ The Flask app itself is simply the [Flask tutorial app](https://flask.palletspro
 
 ## Requirements
 
+This demo project is currently only supported on Mac OS, as the Makefile uses shell commands that aren't available on Windows.
+
 To run this project, first ensure you have the following requirements installed and running on your machine:
 
 * Docker 12+
 * Python 3.7+
 * Make
-* `pg_config` (for our Python project: installed via `brew install libpq` or `brew install postgres` on Mac)
+* `pg_config` (on Mac, install via `brew install libpq` or `brew install postgres`)
 
 ## Getting Started
 
@@ -28,10 +30,14 @@ To create the project `venv` and install requirements, run:
 make install
 ```
 
-Once installed you can start the server with:
+Once installed you can run the full demo environment with:
 ```
-make server
+make demo
 ```
+
+After a few seconds, this will open several browser tabs to the various
+services. Read the terminal output for more information!
+
 
 Run an example fidesops privacy request with:
 ```

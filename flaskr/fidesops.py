@@ -701,10 +701,7 @@ def setup_defaults(access_token):
             access_token=access_token,
         )
     else:
-        print("Skipping Mailchimp connector setup. To enable Mailchimp, set the following environment variables:")
-        print("  MAILCHIMP_DOMAIN")
-        print("  MAILCHIMP_USERNAME")
-        print("  MAILCHIMP_API_KEY")
+        print("Skipping Mailchimp connector setup. To enable Mailchimp, see '.env.template' and set the MAILCHIMP_* variables")
 
 
     # Configure default local storage config to upload the results
@@ -804,16 +801,16 @@ if __name__ == "__main__":
     else:
         logging.basicConfig(level=logging.WARN)
 
-    print("Setting up fideops environment with the following configuration:")
-    print(f"  FIDESOPS_URL = {FIDESOPS_URL}")
-    print(f"  ROOT_CLIENT_ID = {ROOT_CLIENT_ID}")
-    print(f"  ROOT_CLIENT_SECRET = {ROOT_CLIENT_SECRET}")
-    print(f"  FIDESOPS_USERNAME = {FIDESOPS_USERNAME}")
-    print(f"  FIDESOPS_PASSWORD = {FIDESOPS_PASSWORD}")
-    print(f"  POSTGRES_SERVER = {POSTGRES_SERVER}")
-    print(f"  POSTGRES_USER = {POSTGRES_USER}")
-    print(f"  POSTGRES_PASSWORD = {POSTGRES_PASSWORD}")
-    print(f"  POSTGRES_PORT = {POSTGRES_PORT}")
+    logger.info("Setting up fideops environment with the following configuration:")
+    logger.info(f"  FIDESOPS_URL = {FIDESOPS_URL}")
+    logger.info(f"  ROOT_CLIENT_ID = {ROOT_CLIENT_ID}")
+    logger.info(f"  ROOT_CLIENT_SECRET = {ROOT_CLIENT_SECRET}")
+    logger.info(f"  FIDESOPS_USERNAME = {FIDESOPS_USERNAME}")
+    logger.info(f"  FIDESOPS_PASSWORD = {FIDESOPS_PASSWORD}")
+    logger.info(f"  POSTGRES_SERVER = {POSTGRES_SERVER}")
+    logger.info(f"  POSTGRES_USER = {POSTGRES_USER}")
+    logger.info(f"  POSTGRES_PASSWORD = {POSTGRES_PASSWORD}")
+    logger.info(f"  POSTGRES_PORT = {POSTGRES_PORT}")
 
     # Create a new OAuth client to use for our app
     if test_mode:

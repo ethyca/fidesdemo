@@ -53,9 +53,6 @@ help:
 
 .PHONY: preinstall
 preinstall:
-	@echo "*************************************************"
-	@echo "*                  FIDES DEMO                   *"
-	@echo "*************************************************"
 	@echo "Checking versions of fidesdemo dependencies:"
 	@python3 --version
 	@docker --version
@@ -79,6 +76,9 @@ install: preinstall compose-up
 
 .PHONY: demo
 demo: preinstall
+	@make compose-up
+	@make fidesops-init
+	@echo ""
 	@echo "*************************************************"
 	@echo "*                  FIDES DEMO                   *"
 	@echo "*                                               *"
@@ -88,17 +88,18 @@ demo: preinstall
 	@echo "*      (edit '.env' to set ENV variables)       *"
 	@echo "*     (see 'make help' for other commands)      *"
 	@echo "*************************************************"
-	@make compose-up
-	@make fidesops-init
+	@echo "Fidesops webserver running at http://localhost:8080/docs"
+	@echo "Fidesctl webserver running at http://localhost:9090/docs"
+	@echo "Fidesops Privacy Center running at http://localhost:4000"
+	@echo "Fidesops Admin UI running at http://localhost:3000/login (user: fidesopsuser, pass: fidesops1A!)"
 	@echo "Example eCommerce demo app running at http://localhost:2000 (user: exampleuser@ethyca.com, pass: exampleuser)"
+	@echo ""
 	@echo "Opening in browser in 5 seconds..."
-	@sleep 5 && open http://localhost:8080/docs &
-	@sleep 5 && open http://localhost:9090/docs &
-	@sleep 5 && open http://localhost:4000 &
-	@sleep 5 && open http://localhost:3000/login &
-	@sleep 5 && open http://localhost:2000 &
-	@sleep 6 && open fides_uploads &
-	@FLASK_APP=flaskr FLASK_ENV=development FLASK_RUN_PORT=2000 ./venv/bin/flask run
+	@sleep 5 && open http://localhost:3000 &
+	@sleep 6 && open http://localhost:4000 &
+	@sleep 7 && open http://localhost:2000 &
+	@sleep 8 && open fides_uploads &
+	@FLASK_APP=flaskr FLASK_ENV=development FLASK_RUN_PORT=2000 FLASK_SKIP_DOTENV=true ./venv/bin/flask run
 
 
 ####################
@@ -177,7 +178,7 @@ fidesops-request: compose-up
 .PHONY: fidesops-init
 fidesops-init:
 	@echo "Initializing fidesops..."
-	./venv/bin/python flaskr/fidesops.py --setup-only
+	@./venv/bin/python flaskr/fidesops.py --setup-only
 
 .PHONY: fidesops-watch
 fidesops-watch:
@@ -195,14 +196,10 @@ fidesops-watch:
 .PHONY: compose-up
 compose-up:
 	@echo "Rebuilding docker images as needed..."
-	@docker-compose build
+	@docker-compose build 2>/dev/null
 	@echo "Bringing up docker containers..."
 	@docker-compose up -d
 	@pg_isready --host localhost --port 6432 || (echo "Waiting 5s for Postgres to start..." && sleep 5)
-	@echo "Fidesops running at http://localhost:8080/docs"
-	@echo "Fidesctl running at http://localhost:9090/docs"
-	@echo "Fidesops Privacy Center running at http://localhost:4000"
-	@echo "Fidesops Admin UI running at http://localhost:3000/login (user: fidesopsuser, pass: fidesops1A!)"
 
 .PHONY: teardown
 teardown:

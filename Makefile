@@ -55,6 +55,7 @@ help:
 preinstall:
 	@echo "Checking versions of fidesdemo dependencies:"
 	@python3 --version
+	@python3 -m platform
 	@docker --version
 	@docker-compose --version
 	@pg_config --version

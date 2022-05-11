@@ -37,17 +37,21 @@ services:
       - "7379:6379"
 
   fidesops:
-    image: ethyca/fidesops:1.4.1
+    build: ./fidesops
+    image: ethyca/fidesops-demo
     depends_on:
       - db
       - redis
-    command: fidesops webserver
     volumes:
       - ./fides_uploads:/fidesops/fides_uploads
     expose:
       - 8080
+      - 3000
+      - 4000
     ports:
       - "8080:8080"
+      - "3000:3000"
+      - "4000:4000"
     environment:
       - FIDESOPS__SECURITY__APP_ENCRYPTION_KEY=QLMI5I0xLWUXE4JN4Asnba79JiBHWWM3
       - FIDESOPS__SECURITY__OAUTH_ROOT_CLIENT_ID=fidesopsadmin
@@ -62,30 +66,6 @@ services:
       - FIDESOPS__REDIS__PORT=6379
       - FIDESOPS__REDIS__PASSWORD=redispass
       - FIDESOPS__EXECUTION__REQUIRE_MANUAL_REQUEST_APPROVAL=${FIDESOPS__EXECUTION__REQUIRE_MANUAL_REQUEST_APPROVAL:-True}
-
-  fidesops-privacycenter:
-    build: ./fides_privacy_center
-    image: ethyca/fidesops-privacycenter
-    depends_on:
-      - fidesops
-    # Mount fides_privacy_center/config directory to allow live editing of the privacy center
-    volumes:
-      - ./fides_privacy_center/config:/fidesops/clients/privacy-center/config
-      - ./flaskr/static:/fidesops/clients/privacy-center/public/static
-    expose:
-      - 4000
-    ports:
-      - "4000:3000"
-
-  fidesops-adminui:
-    build: ./fides_admin_ui
-    image: ethyca/fidesops-adminui
-    depends_on:
-      - fidesops
-    expose:
-      - 3000
-    ports:
-      - "3000:3000"
 
 volumes:
   postgres:

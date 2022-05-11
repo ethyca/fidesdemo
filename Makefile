@@ -1,45 +1,51 @@
 .DEFAULT_GOAL := help
 
+# Load in an .env file, if present
+ifneq (,$(wildcard ./.env))
+    include .env
+    export
+endif
+
 .PHONY: help
 help:
-	@echo --------------------
-	@echo Demo targets:
-	@echo ----
-	@echo help - Show this help
-	@echo install - Creates a virtual environment, installs, and initializes the project, including docker compose containers
-	@echo demo - Runs all Fides tools and the Flask server to demonstrate end-to-end usage
-	@echo clean - Runs various commands to wipe out everything: the virtual environment, temporary files, docker containers, volumes, etc.
-	@echo reset-db - Removes the Postgres database used for Fides tools and Flask server, then reinitializes it
-	@echo teardown - Brings down the docker compose environment
-	@echo --------------------
-	@echo 
-	@echo --------------------
-	@echo Fidesops demo targets:
-	@echo --------------------
-	@echo fidesops-init - Initialize the fidesops server with default policies and the latest datasets from .fides/
-	@echo fidesops-watch - Watch the .fides/ folder and automatically reinitializes fidesops when files are changed
-	@echo fidesops-request - Uses fidesops to interactively configure policy and execute privacy requests
-	@echo --------------------
-	@echo 
-	@echo --------------------
-	@echo Fidesctl demo targets:
-	@echo --------------------
-	@echo fidesctl-evaluate - Perform a dry policy evaluation of the project manifests in .fides/
-	@echo fidesctl-apply - Apply the latest project manifests in .fides/ to the fidesctl server
-	@echo fidesctl-export-datamap - Exports the fidesctl server\'s current state to a datamap XLSX \(use \'fidesctl-apply\' to update this\)
-	@echo fidesctl-generate-dataset - Automatically generates a dataset YAML by connecting to the Flask server\'s database locally
-	@echo fidesctl-generate-system-aws - Automatically generates a system YAML by connecting to an AWS account \(requires AWS credentials\)
-	@echo fidesctl-scan-system-aws - Generates a coverage report by comparing the fidesctl server\'s current systems to an AWS account \(requires AWS credentials\)
-	@echo --------------------
-	@echo 
-	@echo --------------------
-	@echo Flaskr example webserver targets:
-	@echo --------------------
-	@echo server - Runs the Flask server in development mode, including using compose-up to start all dependencies
-	@echo test - Runs the pytest suite, including using compose-up to start all dependencies
-	@echo flaskr-init - Initializes the Flask servers database schema and test data
-	@echo black - Auto-formats project code with Black
-	@echo --------------------
+	@echo "--------------------"
+	@echo "Demo targets:"
+	@echo "----"
+	@echo "help - Show this help"
+	@echo "install - Creates a virtual environment, installs, and initializes the project, including docker compose containers"
+	@echo "demo - Runs all Fides tools and the Flask server to demonstrate end-to-end usage"
+	@echo "clean - Runs various commands to wipe out everything: the virtual environment, temporary files, docker containers, volumes, etc."
+	@echo "reset-db - Removes the Postgres database used for Fides tools and Flask server, then reinitializes it"
+	@echo "teardown - Brings down the docker compose environment"
+	@echo "--------------------"
+	@echo ""
+	@echo "--------------------"
+	@echo "Fidesops demo targets:"
+	@echo "--------------------"
+	@echo "fidesops-init - Initialize the fidesops server with default policies and the latest datasets from .fides/"
+	@echo "fidesops-watch - Watch the .fides/ folder and automatically reinitializes fidesops when files are changed"
+	@echo "fidesops-request - Uses fidesops to interactively configure policy and execute privacy requests"
+	@echo "--------------------"
+	@echo ""
+	@echo "--------------------"
+	@echo "Fidesctl demo targets:"
+	@echo "--------------------"
+	@echo "fidesctl-evaluate - Perform a dry policy evaluation of the project manifests in .fides/"
+	@echo "fidesctl-apply - Apply the latest project manifests in .fides/ to the fidesctl server"
+	@echo "fidesctl-export-datamap - Exports the fidesctl server's current state to a datamap XLSX (use 'fidesctl-apply' to update this)"
+	@echo "fidesctl-generate-dataset - Automatically generates a dataset YAML by connecting to the Flask server's database locally"
+	@echo "fidesctl-generate-system-aws - Automatically generates a system YAML by connecting to an AWS account (requires AWS credentials)"
+	@echo "fidesctl-scan-system-aws - Generates a coverage report by comparing the fidesctl server's current systems to an AWS account (requires AWS credentials)"
+	@echo "--------------------"
+	@echo ""
+	@echo "--------------------"
+	@echo "Flaskr example webserver targets:"
+	@echo "--------------------"
+	@echo "server - Runs the Flask server in development mode, including using compose-up to start all dependencies"
+	@echo "test - Runs the pytest suite, including using compose-up to start all dependencies"
+	@echo "flaskr-init - Initializes the Flask servers database schema and test data"
+	@echo "black - Auto-formats project code with Black"
+	@echo "--------------------"
 
 ####################
 # Demo
@@ -64,12 +70,12 @@ install: preinstall compose-up
 	@./venv/bin/pip --version
 	./venv/bin/pip install -r requirements.txt
 	./venv/bin/pip install -e .
-	@echo "Initializing Flask & Fidesops..."
+	@echo "Initializing Flask server..."
 	@make flaskr-init
-	@make fidesops-init
 	@make teardown
-	@echo "Done! Run '. venv/bin/activate' to activate venv"
+	@echo "Done!"
 	@echo "Run 'make demo' to bring up all services"
+	@echo "Copy '.env.template' to create a '.env' file for secrets, if needed"
 
 .PHONY: demo
 demo: preinstall
@@ -79,6 +85,8 @@ demo: preinstall
 	@echo "*       (use 'make teardown' to shutdown)       *"
 	@echo "*       (use 'make reset-db' to reset db)       *"
 	@echo "* (use 'make fidesops-watch' to reload config)  *"
+	@echo "*      (edit '.env' to set ENV variables)       *"
+	@echo "*     (see 'make help' for other commands)      *"
 	@echo "*************************************************"
 	@make compose-up
 	@make fidesops-init
@@ -187,7 +195,7 @@ fidesops-watch:
 .PHONY: compose-up
 compose-up:
 	@echo "Rebuilding docker images as needed..."
-	@docker-compose build --quiet
+	@docker-compose build
 	@echo "Bringing up docker containers..."
 	@docker-compose up -d
 	@pg_isready --host localhost --port 6432 || (echo "Waiting 5s for Postgres to start..." && sleep 5)

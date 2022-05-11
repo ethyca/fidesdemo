@@ -87,7 +87,9 @@ dataset:
       fidesops_meta:
         data_type: string
     - name: id
-      data_categories: [user.derived.identifiable.unique_id]
+      data_categories:
+        - user.derived.identifiable.unique_id
+        # - user.provided.identifiable.health_and_medical # uncomment and run `make fidesctl-evaluate` to see an example violation
       fidesops_meta:
         primary_key: True
         data_type: integer

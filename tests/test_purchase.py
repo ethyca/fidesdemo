@@ -8,7 +8,7 @@ from flaskr.db import get_db
 @pytest.mark.parametrize("path", ("/1/purchase",))
 def test_login_required(client, path):
     response = client.post(path)
-    assert response.headers["Location"] == "http://localhost/auth/login"
+    assert response.headers["Location"] == "/auth/login"
 
 
 @pytest.mark.parametrize("path", ("/4/purchase",))
@@ -34,7 +34,7 @@ def test_purchase(client, auth, app):
     with app.app_context():
         db = get_db()
         count = db.execute(text("SELECT COUNT(id) FROM purchases")).fetchone()[0]
-        assert count == 2
+        assert count == 3
 
 
 @pytest.mark.parametrize("path", ("/1/purchase",))

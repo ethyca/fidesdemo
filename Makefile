@@ -93,7 +93,7 @@ demo: preinstall
 	@echo "Fidesctl webserver running at http://localhost:9090/docs"
 	@echo "Fidesops Privacy Center running at http://localhost:4000"
 	@echo "Fidesops Admin UI running at http://localhost:3000/login (user: fidesopsuser, pass: fidesops1A!)"
-	@echo "Example eCommerce demo app running at http://localhost:2000 (user: exampleuser@ethyca.com, pass: exampleuser)"
+	@echo "Example eCommerce demo app running at http://localhost:2000 (user: user@example.com, pass: user)"
 	@echo ""
 	@echo "Opening in browser in 5 seconds..."
 	@sleep 5 && open http://localhost:3000 &

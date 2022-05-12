@@ -676,6 +676,18 @@ def setup_defaults(access_token):
         access_token=access_token,
     )
 
+    # Upload the postgres dataset
+    validate_dataset(
+        connection_key="flaskr_postgres",
+        yaml_path=".fides/flaskr_postgres_dataset.yml",
+        access_token=access_token,
+    )
+    datasets = create_dataset(
+        connection_key="flaskr_postgres",
+        yaml_path=".fides/flaskr_postgres_dataset.yml",
+        access_token=access_token,
+    )
+
     # Configure Mailchimp connector, if these environment variables are set
     mailchimp_domain = os.environ.get("MAILCHIMP_DOMAIN")
     mailchimp_username = os.environ.get("MAILCHIMP_USERNAME")
@@ -700,6 +712,19 @@ def setup_defaults(access_token):
             api_key=mailchimp_api_key,
             access_token=access_token,
         )
+
+        # Upload mailchimp dataset
+        validate_dataset(
+            connection_key="flaskr_mailchimp",
+            yaml_path=".fides/mailchimp_dataset.yml",
+            access_token=access_token,
+        )
+        mailchimp_dataset = create_dataset(
+            connection_key="flaskr_mailchimp",
+            yaml_path=".fides/mailchimp_dataset.yml",
+            access_token=access_token,
+        )
+
     else:
         print("Skipping Mailchimp connector setup. To enable Mailchimp, see '.env.template' and set the MAILCHIMP_* variables")
 
@@ -772,30 +797,6 @@ def setup_defaults(access_token):
         data_category="user.provided.identifiable.name",
         access_token=access_token,
     )
-
-    # Upload the postgres dataset at least once
-    validate_dataset(
-        connection_key="flaskr_postgres",
-        yaml_path=".fides/flaskr_postgres_dataset.yml",
-        access_token=access_token,
-    )
-    datasets = create_dataset(
-        connection_key="flaskr_postgres",
-        yaml_path=".fides/flaskr_postgres_dataset.yml",
-        access_token=access_token,
-    )
-    # Upload mailchimp dataset
-    validate_dataset(
-        connection_key="flaskr_mailchimp",
-        yaml_path=".fides/mailchimp_dataset.yml",
-        access_token=access_token,
-    )
-    mailchimp_dataset = create_dataset(
-        connection_key="flaskr_mailchimp",
-        yaml_path=".fides/mailchimp_dataset.yml",
-        access_token=access_token,
-    )
-
 
 if __name__ == "__main__":
     # If --test is provided, enable a flag to provide more detailed output

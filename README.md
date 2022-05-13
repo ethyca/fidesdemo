@@ -81,24 +81,6 @@ flaskr=# SELECT * FROM purchases;
   1 | 2020-01-04 12:00:00 |          1 |        2 | 123 Example St | Apt 123  | Exampletown | NY    | 12345
 (1 row)
 ```
-
-## Tutorial Steps
-
-The full walkthrough for setting up this demo project can be found in two parts:
-
-1. Setting up `fidesctl`: https://ethyca.github.io/fides/tutorial/
-1. Setting up `fidesops`: https://ethyca.github.io/fidesops/tutorial/
-
-You can also recreate the tutorial steps by checking out the different git tags:
-
-1. `git checkout tutorial-start` to start from the beginning with just the basic Flask app
-1. `git checkout fidesctl-start` to rewind to when `fidesctl` is installed but not used
-1. `git checkout fidesctl-manifests` to start from an initial set of `fidesctl` manifests
-1. `git checkout fidesctl-add-google-analytics` to view an example of a `fidesctl` manifest that fails a policy
-1. `git checkout fidesctl-demo` to view the working demo of `fidesctl evaluate` against a few example manifests
-1. `git checkout fidesops-start` to have `fidesops` installed but not used
-1. `git checkout fidesops-demo` to view the final version with `fidesops` executing privacy requests
-
 ## License
 
 This project is licensed under the Apache Software License Version 2.0.

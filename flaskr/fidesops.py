@@ -610,7 +610,7 @@ def print_results(privacy_request_id):
     Check to see if a result JSON for the given privacy request exists, and
     print it to the console if so.
     """
-    results_path = f"fides_uploads/{privacy_request_id}.json"
+    results_path = f"fides_tmp/{privacy_request_id}.json"
     wait_time = 0
     print(
         f"Waiting for fidesops privacy request results to upload to {results_path}..."
@@ -621,7 +621,7 @@ def print_results(privacy_request_id):
             logger.info(
                 f"Successfully read fidesops privacy request results from {results_path}:"
             )
-            with open(f"fides_uploads/{privacy_request_id}.json", "r") as file:
+            with open(f"fides_tmp/{privacy_request_id}.json", "r") as file:
                 results_json = json.loads(file.read())
                 print(json.dumps(results_json, indent=4))
             return

@@ -1,0 +1,45 @@
+<!doctype html>
+
+<head>
+    <title>Fides Demo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link rel="stylesheet" href="flaskr/static/style.css">
+</head>
+
+<body class="shadow-sm">
+    <nav class="navbar">
+        <div class="navbar-brand">
+            <img class="d-inline-block" src="flaskr/static/fides_logo_primary.png" /> Demo
+        </div>
+    </nav>
+    <section class="content">
+        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1602 1160">
+            <image width="1602" height="1160" xlink:href="fidesdemo.png"></image>
+            <a xlink:href="http://localhost:2000" target="_blank">
+              <rect x="80" y="80" fill="#fff" opacity="0" width="320" height="124"></rect>
+            </a>
+            <a xlink:href="http://localhost:3000" target="_blank">
+              <rect x="880" y="960" fill="#fff" opacity="0" width="240" height="124"></rect>
+            </a>
+            <a xlink:href="http://localhost:4000" target="_blank">
+              <rect x="560" y="960" fill="#fff" opacity="0" width="240" height="124"></rect>
+            </a>
+        </svg>
+        <hr/>
+        <header>
+            <h5>Links</h5>
+        </header>
+        <ul class="list-group">
+            <a class="list-group-item list-group-item-action" href="http://localhost:2000" target="_blank">Flask Webserver</a>
+            <a class="list-group-item list-group-item-action" href="http://localhost:3000" target="_blank">Fidesops Admin UI</a>
+            <a class="list-group-item list-group-item-action" href="http://localhost:4000" target="_blank">Fidesops Privacy Center</a>
+            <a class="list-group-item list-group-item-action" href="http://localhost:8080/docs" target="_blank">Fidesops API Documentation</a>
+            <a class="list-group-item list-group-item-action" href="http://localhost:9090/docs" target="_blank">Fidesctl API Documentation</a>
+        </ul>
+        <map name="map">
+            <area target="" alt="privacy-center" title="privacy-center" href="http://localhost:4000" coords="802,1084,558,959" shape="rect">
+            <area target="" alt="admin-ui" title="admin-ui" href="http://localhost:3000" coords="882,959,1122,1084" shape="rect">
+            <area target="" alt="flaskr" title="flaskr" href="http://localhost:2000" coords="81,82,398,202" shape="rect">
+        </map>
+    </section>
+</body>

@@ -8,7 +8,7 @@
             "policy_key": "default_access_policy",
             "icon_path": "/download.svg",
             "title": "Download your data",
-            "description": "Runs the default access policy, which downloads all user data and uploads to ./fides_uploads. Try user@example.com for a test!",
+            "description": "Runs the default access policy, which downloads user data and uploads to ./fides_tmp. Try user@example.com for a test!",
             "identity_inputs": {
                 "email": "required"
             }
@@ -17,7 +17,7 @@
             "policy_key": "default_erasure_policy",
             "icon_path": "/delete.svg",
             "title": "Erase your data",
-            "description": "Runs the default erasure policy, which pseudonymizes all user data via HMAC masking strategy. Try user@example.com for a test!",
+            "description": "Runs the default erasure policy, which pseudonymizes user data via HMAC masking strategy. Try user@example.com for a test!",
             "identity_inputs": {
                 "email": "required"
             }

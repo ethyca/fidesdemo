@@ -96,10 +96,7 @@ demo: preinstall
 	@echo "Example eCommerce demo app running at http://localhost:2000 (user: user@example.com, pass: user)"
 	@echo ""
 	@echo "Opening in browser in 5 seconds..."
-	@sleep 5 && open http://localhost:3000 &
-	@sleep 6 && open http://localhost:4000 &
-	@sleep 7 && open http://localhost:2000 &
-	@sleep 8 && open fides_uploads &
+	@sleep 5 && open demo.html &
 	@FLASK_APP=flaskr FLASK_ENV=development FLASK_RUN_PORT=2000 FLASK_SKIP_DOTENV=true ./venv/bin/flask run
 
 
@@ -139,15 +136,17 @@ fidesctl-evaluate: compose-up
 .PHONY: fidesctl-export-datamap
 fidesctl-export-datamap: compose-up
 	@echo "Exporting datamap from fidesctl..."
+	rm -f fides_tmp/*.xlsx
 	rm -f .fides/*.xlsx
 	./venv/bin/fidesctl apply
 	./venv/bin/fidesctl export datamap
-	open .fides/*.xlsx
+	mv .fides/*.xlsx fides_tmp/
+	open fides_tmp/*.xlsx
 
-.PHONY: fidesctl-generate-dataset
-fidesctl-generate-dataset: compose-up
+.PHONY: fidesctl-generate-dataset-db
+fidesctl-generate-dataset-db: compose-up
 	@echo "Generating dataset with fidesctl..."
-	./venv/bin/fidesctl generate dataset postgresql://postgres:postgres@localhost:6432/flaskr .fides/generated_dataset.yml
+	./venv/bin/fidesctl generate dataset db postgresql://postgres:postgres@localhost:6432/flaskr fides_tmp/generated_dataset.yml
 
 .PHONY: fidesctl-aws-check-env
 fidesctl-aws-check-env:
@@ -159,7 +158,7 @@ fidesctl-aws-check-env:
 .PHONY: fidesctl-generate-system-aws
 fidesctl-generate-system-aws: fidesctl-aws-check-env compose-up
 	@echo "Generating systems with fidesctl..."
-	./venv/bin/fidesctl generate system aws .fides/generated_aws_systems.yml
+	./venv/bin/fidesctl generate system aws fides_tmp/generated_aws_systems.yml
 
 .PHONY: fidesctl-scan-system-aws
 fidesctl-scan-system-aws: fidesctl-aws-check-env compose-up
@@ -222,6 +221,7 @@ clean: teardown
 	docker-compose down --remove-orphans --volumes --rmi all
 	docker system prune --force
 	rm -rf instance/ venv/ __pycache__/
-	rm -f fides_uploads/*.json
-	rm -f .fides/*.xlsx
+	rm -f fides_tmp/*.json
+	rm -f fides_tmp/*.yaml
+	rm -f fides_tmp/*.xlsx
 	@echo For a deeper clean, use "docker system prune -a --volumes"

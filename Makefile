@@ -53,12 +53,10 @@ help:
 
 .PHONY: preinstall
 preinstall:
-	@echo "Checking versions of fidesdemo dependencies:"
+	@echo "Checking versions of fidesdemo dependencies. Minimum requirements: Python 3.7, Docker 20.10.11"
 	@python3 --version
-	@python3 -m platform
 	@docker --version
-	@docker-compose --version
-	@pg_config --version
+	@python3 -m platform
 
 .PHONY: install
 install: preinstall compose-up
@@ -94,9 +92,8 @@ demo: preinstall
 	@echo "Fidesops Privacy Center running at http://localhost:4000"
 	@echo "Fidesops Admin UI running at http://localhost:3000/login (user: fidesopsuser, pass: fidesops1A!)"
 	@echo "Example eCommerce demo app running at http://localhost:2000 (user: user@example.com, pass: user)"
+	@open demo.html
 	@echo ""
-	@echo "Opening in browser in 5 seconds..."
-	@sleep 5 && open demo.html &
 	@FLASK_APP=flaskr FLASK_ENV=development FLASK_RUN_PORT=2000 FLASK_SKIP_DOTENV=true ./venv/bin/flask run
 
 
@@ -215,15 +212,14 @@ fidesops-watch:
 .PHONY: compose-up
 compose-up:
 	@echo "Rebuilding docker images as needed..."
-	@docker-compose build
+	@docker compose build
 	@echo "Bringing up docker containers..."
-	@docker-compose up -d
-	@pg_isready --host localhost --port 6432 || (echo "Waiting 5s for Postgres to start..." && sleep 5)
+	@docker compose up -d
 
 .PHONY: teardown
 teardown:
 	@echo "Bringing down docker containers..."
-	@docker-compose down --remove-orphans
+	@docker compose down --remove-orphans
 
 .PHONY: reset-db
 reset-db: teardown
@@ -238,7 +234,7 @@ reset-db: teardown
 clean: teardown
 	@echo ""
 	@echo "Cleaning project files, docker containers, volumes, etc...."
-	docker-compose down --remove-orphans --volumes --rmi all
+	docker compose down --remove-orphans --volumes --rmi all
 	docker system prune --force
 	rm -rf instance/ venv/ __pycache__/
 	rm -f fides_tmp/*.json

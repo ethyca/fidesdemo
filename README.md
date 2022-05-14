@@ -18,10 +18,11 @@ This demo project is currently only supported on Mac OS, as the Makefile uses sh
 
 To run this project, first ensure you have the following requirements installed and running on your machine:
 
-* Docker 12+
-* Python 3.7+
+* Docker 20.10.11
+* Python 3.7
 * Make
-* `pg_config` (on Mac, install via `brew install libpq` or `brew install postgres`)
+
+Run `make preinstall` to check the installed versions of these dependencies before getting started.
 
 ## Getting Started
 

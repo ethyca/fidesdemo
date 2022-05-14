@@ -43,7 +43,7 @@ services:
       - db
       - redis
     volumes:
-      - ./fides_tmp:/fidesops/fides_tmp
+      - ./fides_tmp:/fidesops/fides_uploads
     expose:
       - 8080
       - 3000

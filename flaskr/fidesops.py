@@ -695,7 +695,9 @@ def setup_defaults(access_token):
 
     if mailchimp_domain and mailchimp_username and mailchimp_api_key:
         # Create the default connection to our Mailchimp instance
-        create_mailchimp_saas_connection(key="flaskr_mailchimp", access_token=access_token)
+        create_mailchimp_saas_connection(
+            key="flaskr_mailchimp", access_token=access_token
+        )
 
         # Add Mailchimp SaaS Config (only needed for ConnectionConfigs of type "saas")
         create_mailchimp_saas_config(
@@ -726,8 +728,9 @@ def setup_defaults(access_token):
         )
 
     else:
-        print("Skipping Mailchimp connector setup. To enable Mailchimp, see '.env.template' and set the MAILCHIMP_* variables")
-
+        print(
+            "Skipping Mailchimp connector setup. To enable Mailchimp, see '.env.template' and set the MAILCHIMP_* variables"
+        )
 
     # Configure default local storage config to upload the results
     create_local_storage(
@@ -797,6 +800,7 @@ def setup_defaults(access_token):
         data_category="user.provided.identifiable.name",
         access_token=access_token,
     )
+
 
 if __name__ == "__main__":
     # If --test is provided, enable a flag to provide more detailed output

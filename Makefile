@@ -33,7 +33,7 @@ help:
 	@echo "fidesctl-evaluate - Perform a dry policy evaluation of the project manifests in .fides/"
 	@echo "fidesctl-apply - Apply the latest project manifests in .fides/ to the fidesctl server"
 	@echo "fidesctl-export-datamap - Exports the fidesctl server's current state to a datamap XLSX (use 'fidesctl-apply' to update this)"
-	@echo "fidesctl-generate-dataset - Automatically generates a dataset YAML by connecting to the Flask server's database locally"
+	@echo "fidesctl-generate-dataset-db - Automatically generates a dataset YAML by connecting to the Flask server's database locally"
 	@echo "fidesctl-generate-system-aws - Automatically generates a system YAML by connecting to an AWS account (requires AWS credentials)"
 	@echo "fidesctl-scan-system-aws - Generates a coverage report by comparing the fidesctl server's current systems to an AWS account (requires AWS credentials)"
 	@echo "--------------------"
@@ -133,6 +133,11 @@ fidesctl-evaluate: compose-up
 	@echo "Evaluating policy with fidesctl..."
 	./venv/bin/fidesctl evaluate --dry .fides
 
+.PHONY: fidesctl-apply
+fidesctl-apply: compose-up
+	@echo "Applying latest resources from .fides with fidesctl..."
+	./venv/bin/fidesctl apply .fides
+
 .PHONY: fidesctl-export-datamap
 fidesctl-export-datamap: compose-up
 	@echo "Exporting datamap from fidesctl..."
@@ -196,7 +201,7 @@ fidesops-watch:
 .PHONY: compose-up
 compose-up:
 	@echo "Rebuilding docker images as needed..."
-	@docker-compose build 2>/dev/null
+	@docker-compose build
 	@echo "Bringing up docker containers..."
 	@docker-compose up -d
 	@pg_isready --host localhost --port 6432 || (echo "Waiting 5s for Postgres to start..." && sleep 5)
@@ -222,6 +227,6 @@ clean: teardown
 	docker system prune --force
 	rm -rf instance/ venv/ __pycache__/
 	rm -f fides_tmp/*.json
-	rm -f fides_tmp/*.yaml
+	rm -f fides_tmp/*.yml
 	rm -f fides_tmp/*.xlsx
 	@echo For a deeper clean, use "docker system prune -a --volumes"

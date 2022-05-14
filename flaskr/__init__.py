@@ -4,7 +4,7 @@ from flask import Flask
 
 # NOTE: Defining these constants inline for simplicity, but in a real
 # application these must be loaded from ENV or similar for security!
-POSTGRES_URL = "postgresql://postgres:postgres@localhost:5432/flaskr"
+POSTGRES_URL = "postgresql://postgres:postgres@localhost:6432/flaskr"
 GOOGLE_ANALYTICS_ID = "UA-xxxxxxxxx-y"
 SECRET_KEY = "dev"
 

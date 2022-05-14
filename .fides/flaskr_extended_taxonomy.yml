@@ -1,0 +1,30 @@
+data_use:
+  - fides_key: provide.system.operations.e-commerce
+    name: e-commerce
+    description: Usage of our Flaskr e-commerce platform
+    recipients:
+    - Shipping partner
+    legal_basis: Consent
+    special_category: Consent
+    parent_key: provide.system.operations
+  - fides_key: collect.analytics
+    name: Analytics Tracking
+    description: Analytics tracking for our Flaskr e-commerce platform
+    recipients:
+    - Google
+    legal_basis: Legitimate Interests
+    special_category: Vital Interests
+    legitimate_interest_impact_assessment: https://example.org/legitimate_interest_assessment
+    parent_key: collect
+
+data_subject:
+  - fides_key: flaskr_customer
+    name: Flaskr Customer
+    description: Customer of our Flaskr e-commerce application
+    rights:
+      strategy: INCLUDE
+      values:
+      - Informed
+      - Erasure
+    automated_decisions_or_profiling: false
+

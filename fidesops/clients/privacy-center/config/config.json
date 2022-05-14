@@ -1,0 +1,26 @@
+{
+    "title": "Fides Privacy Center",
+    "description": "This is a live version of the Fides Privacy Center, running locally on this machine! Use the options below to submit privacy requests.",
+    "fidesops_host_development": "http://localhost:8080/api/v1",
+    "fidesops_host_production": "",
+    "logo_path": "/logo.svg",
+    "actions": [{
+            "policy_key": "default_access_policy",
+            "icon_path": "/download.svg",
+            "title": "Download your data",
+            "description": "Runs the default access policy, which downloads user data and uploads to ./fides_tmp. Try user@example.com for a test!",
+            "identity_inputs": {
+                "email": "required"
+            }
+        },
+        {
+            "policy_key": "default_erasure_policy",
+            "icon_path": "/delete.svg",
+            "title": "Erase your data",
+            "description": "Runs the default erasure policy, which pseudonymizes user data via HMAC masking strategy. Try user@example.com for a test!",
+            "identity_inputs": {
+                "email": "required"
+            }
+        }
+    ]
+}

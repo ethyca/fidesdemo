@@ -106,21 +106,25 @@ demo: preinstall
 
 .PHONY: server
 server: compose-up
+	@echo ""
 	@echo "Starting Flask server... (user: user@example.com, pass: user)"
 	FLASK_APP=flaskr FLASK_ENV=development FLASK_RUN_PORT=2000 ./venv/bin/flask run
 
 .PHONY: test
 test: compose-up
+	@echo ""
 	@echo "Running pytest..."
 	FLASK_APP=flaskr FLASK_ENV=development ./venv/bin/pytest
 
 .PHONY: flaskr-init
 flaskr-init:
+	@echo ""
 	@echo "Initializing Flask database..."
 	FLASK_APP=flaskr FLASK_ENV=development ./venv/bin/flask init-db
 
 .PHONY: black
 black:
+	@echo ""
 	@echo "Auto-formatting project code with Black..."
 	./venv/bin/black flaskr/ tests/
 
@@ -130,16 +134,19 @@ black:
 
 .PHONY: fidesctl-evaluate
 fidesctl-evaluate: compose-up
+	@echo ""
 	@echo "Evaluating policy with fidesctl..."
 	./venv/bin/fidesctl evaluate --dry .fides
 
 .PHONY: fidesctl-apply
 fidesctl-apply: compose-up
+	@echo ""
 	@echo "Applying latest resources from .fides with fidesctl..."
 	./venv/bin/fidesctl apply .fides
 
 .PHONY: fidesctl-export-datamap
 fidesctl-export-datamap: compose-up
+	@echo ""
 	@echo "Exporting datamap from fidesctl..."
 	rm -f fides_tmp/*.xlsx
 	rm -f .fides/*.xlsx
@@ -150,8 +157,9 @@ fidesctl-export-datamap: compose-up
 
 .PHONY: fidesctl-generate-dataset-db
 fidesctl-generate-dataset-db: compose-up
+	@echo ""
 	@echo "Generating dataset with fidesctl..."
-	./venv/bin/fidesctl generate dataset db postgresql://postgres:postgres@localhost:6432/flaskr fides_tmp/generated_dataset.yml
+	./venv/bin/fidesctl generate dataset db postgresql://postgres:postgres@localhost:6432/flaskr .fides/generated_dataset.yml
 
 .PHONY: fidesctl-aws-check-env
 fidesctl-aws-check-env:
@@ -162,13 +170,16 @@ fidesctl-aws-check-env:
 
 .PHONY: fidesctl-generate-system-aws
 fidesctl-generate-system-aws: fidesctl-aws-check-env compose-up
+	@echo ""
 	@echo "Generating systems with fidesctl..."
-	./venv/bin/fidesctl generate system aws fides_tmp/generated_aws_systems.yml
+	./venv/bin/fidesctl generate system aws .fides/generated_aws_systems.yml
+	@echo "Done! To apply these systems to the fidesctl webserver, run 'make fidesctl-apply'"
 
 .PHONY: fidesctl-scan-system-aws
 fidesctl-scan-system-aws: fidesctl-aws-check-env compose-up
+	@echo ""
 	@echo "Scanning system coverage with fidesctl..."
-	./venv/bin/fidesctl scan system aws
+	./venv/bin/fidesctl scan system aws || echo "Missing coverage! Use 'make fidesctl-generate-system-aws' to generate"
 
 ####################
 # fidesops
@@ -177,17 +188,20 @@ fidesctl-scan-system-aws: fidesctl-aws-check-env compose-up
 .PHONY: fidesops-request
 fidesops-request: export FIDESOPS__EXECUTION__REQUIRE_MANUAL_REQUEST_APPROVAL=False
 fidesops-request: compose-up
+	@echo ""
 	@echo "Configuring fidesops and running an example request..."
 	./venv/bin/python flaskr/fidesops.py
 
 .PHONY: fidesops-init
 fidesops-init:
+	@echo ""
 	@echo "Initializing fidesops..."
 	@./venv/bin/python flaskr/fidesops.py --setup-only
 
 .PHONY: fidesops-watch
 fidesops-watch:
 	@make fidesops-init
+	@echo ""
 	@echo "Setting up watchdog on .fides/ directory to re-initialize fidesops..."
 	@./venv/bin/watchmedo shell-command \
 	  --command="make fidesops-init" \
@@ -222,6 +236,7 @@ reset-db: teardown
 
 .PHONY: clean
 clean: teardown
+	@echo ""
 	@echo "Cleaning project files, docker containers, volumes, etc...."
 	docker-compose down --remove-orphans --volumes --rmi all
 	docker system prune --force
@@ -229,4 +244,5 @@ clean: teardown
 	rm -f fides_tmp/*.json
 	rm -f fides_tmp/*.yml
 	rm -f fides_tmp/*.xlsx
+	rm -f .fides/generated*.yml
 	@echo For a deeper clean, use "docker system prune -a --volumes"

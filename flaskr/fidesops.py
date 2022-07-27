@@ -9,12 +9,11 @@ Utility script to configure fidesops with:
 import json
 import logging
 import os
-import secrets
 import sys
 import time
+from base64 import b64encode
 from datetime import datetime
 from os.path import exists
-from typing import Dict, Any
 
 import requests
 import yaml
@@ -33,6 +32,12 @@ POSTGRES_SERVER = "db"
 POSTGRES_USER = "postgres"
 POSTGRES_PASSWORD = "postgres"
 POSTGRES_PORT = "5432"
+
+
+# borrow this fideslib util for now, since there are dependency conflicts with fideslib and fidesctl
+def str_to_b64_str(string: str, encoding: str = "UTF-8") -> str:
+    """Converts str into a utf-8 encoded string"""
+    return b64encode(string.encode(encoding)).decode(encoding)
 
 
 def get_access_token(client_id, client_secret):
@@ -84,6 +89,8 @@ def create_oauth_client(access_token):
         "connection:create_or_update",
         "connection:delete",
         "connection:read",
+        "connection:authorize",
+        "connection_type:read",
         "dataset:create_or_update",
         "dataset:delete",
         "dataset:read",
@@ -107,6 +114,11 @@ def create_oauth_client(access_token):
         "storage:read",
         "user:create",
         "user:delete",
+        "user:update",
+        "user:reset-password",
+        "user-permission:create",
+        "user-permission:update",
+        "user-permission:read",
         "webhook:create_or_update",
         "webhook:delete",
         "webhook:read",
@@ -137,7 +149,7 @@ def create_user(username, password, access_token):
 
     See http://localhost:8080/docs#/Users/create_user_api_v1_user_post
     """
-    user_data = {"username": username, "password": password}
+    user_data = {"username": username, "password": str_to_b64_str(password)}
 
     response = requests.post(
         f"{FIDESOPS_URL}/api/v1/user",
@@ -818,7 +830,7 @@ if __name__ == "__main__":
     else:
         logging.basicConfig(level=logging.WARN)
 
-    logger.info("Setting up fideops environment with the following configuration:")
+    logger.info("Setting up fidesops environment with the following configuration:")
     logger.info(f"  FIDESOPS_URL = {FIDESOPS_URL}")
     logger.info(f"  ROOT_CLIENT_ID = {ROOT_CLIENT_ID}")
     logger.info(f"  ROOT_CLIENT_SECRET = {ROOT_CLIENT_SECRET}")

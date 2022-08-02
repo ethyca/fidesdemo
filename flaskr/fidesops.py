@@ -627,7 +627,7 @@ def print_results(privacy_request_id):
     print(
         f"Waiting for fidesops privacy request results to upload to {results_path}..."
     )
-    while wait_time < 5:
+    while wait_time < 10:
         if exists(results_path):
             requests.get(f"{FIDESOPS_URL}/health")
             logger.info(
@@ -850,10 +850,18 @@ if __name__ == "__main__":
     print("Waiting for fidesops to be healthy...")
     while True:
         try:
-            requests.get(f"{FIDESOPS_URL}/health")
+            res = requests.get(f"{FIDESOPS_URL}/health")
+            if res.json()["database"] == "unhealthy":
+                print("connection unhealthy, retrying")
+                raise requests.ConnectionError
+            if res.json()["database"] == "needs migration":
+                print("needs migration")
+                break
             break
         except requests.ConnectionError:
             time.sleep(1)
+        except Exception as e:
+            print(e)
 
     # Create a new OAuth client every time to fetch an access token (not efficient, but it's a demo!)
     root_token = get_access_token(

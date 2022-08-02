@@ -1,7 +1,7 @@
 # Demo Dockerfile that packages the fidesops webserver, admin UI, and privacy center in a single container
 FROM ethyca/fidesops:1.6.3
 
-# Install node v16 on top of the fideops image
+# Install node v16 on top of the fidesops image
 RUN \
     curl -sL 'https://deb.nodesource.com/setup_16.x' | bash - \
     && apt-get install -y nodejs
@@ -15,11 +15,13 @@ RUN npm install
 # Build the admin UI
 WORKDIR /fidesops/clients/admin-ui
 COPY clients/admin-ui/. /fidesops/clients/admin-ui/
+# build error when running build
 #RUN npx next build
 
 # Build the privacy center
 WORKDIR /fidesops/clients/privacy-center
 COPY clients/privacy-center/config/. /fidesops/clients/privacy-center/config/
+# build error when running build
 # RUN npx next build
 
 # Run our script to start all the services

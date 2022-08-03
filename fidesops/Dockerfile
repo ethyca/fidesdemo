@@ -24,6 +24,8 @@ COPY clients/privacy-center/config/. /fidesops/clients/privacy-center/config/
 # build error when running build
 # RUN npx next build
 
+ENV FIDESOPS__ROOT_USER__ANALYTICS_OPT_OUT=true
+
 # Run our script to start all the services
 WORKDIR /fidesops
 COPY entrypoint.sh /fidesops/

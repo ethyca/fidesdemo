@@ -56,7 +56,7 @@ services:
       - FIDESOPS__SECURITY__APP_ENCRYPTION_KEY=QLMI5I0xLWUXE4JN4Asnba79JiBHWWM3
       - FIDESOPS__SECURITY__OAUTH_ROOT_CLIENT_ID=fidesopsadmin
       - FIDESOPS__SECURITY__OAUTH_ROOT_CLIENT_SECRET=fidesopsadminsecret
-      - FIDESOPS__SECURITY__CORS_ORIGINS="http://localhost,http://localhost:4000,http://localhost:3000,http://localhost:8080"
+      - FIDESOPS__SECURITY__CORS_ORIGINS="http://localhost,http://localhost:4000,http://localhost:3000,http://localhost:8080,http://localhost:3001"
       - FIDESOPS__DATABASE__SERVER=db
       - FIDESOPS__DATABASE__USER=postgres
       - FIDESOPS__DATABASE__PASSWORD=postgres

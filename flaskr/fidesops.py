@@ -90,7 +90,7 @@ def create_oauth_client(access_token):
         "connection:delete",
         "connection:read",
         "connection:authorize",
-        "connection_type:read",
+        "connection_type:read",  # added in 1.6.3
         "dataset:create_or_update",
         "dataset:delete",
         "dataset:read",
@@ -851,12 +851,12 @@ if __name__ == "__main__":
     while True:
         try:
             res = requests.get(f"{FIDESOPS_URL}/health")
-            if res.json()["database"] == "unhealthy":
-                print("connection unhealthy, retrying")
-                raise requests.ConnectionError
-            if res.json()["database"] == "needs migration":
-                print("needs migration")
-                break
+            # if res.json()["database"] == "unhealthy":
+            #     print("connection unhealthy, retrying")
+            #     raise requests.ConnectionError
+            # if res.json()["database"] == "needs migration":
+            #     print("needs migration")
+            #     break
             break
         except requests.ConnectionError:
             time.sleep(1)

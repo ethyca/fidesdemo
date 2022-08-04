@@ -33,6 +33,51 @@ POSTGRES_USER = "postgres"
 POSTGRES_PASSWORD = "postgres"
 POSTGRES_PORT = "5432"
 
+SCOPES = [
+    "client:create",
+    "client:delete",
+    "client:read",
+    "client:update",
+    "config:read",
+    "connection:create_or_update",
+    "connection:delete",
+    "connection:read",
+    "connection:authorize",
+    "connection_type:read",  # added in 1.6.3
+    "dataset:create_or_update",
+    "dataset:delete",
+    "dataset:read",
+    "encryption:exec",
+    "policy:create_or_update",
+    "policy:delete",
+    "policy:read",
+    "privacy-request:delete",
+    "privacy-request:read",
+    "privacy-request:resume",
+    "privacy-request:review",
+    "rule:create_or_update",
+    "rule:delete",
+    "rule:read",
+    "saas_config:create_or_update",
+    "saas_config:delete",
+    "saas_config:read",
+    "scope:read",
+    "storage:create_or_update",
+    "storage:delete",
+    "storage:read",
+    "user:create",
+    "user:delete",
+    "user:read",
+    "user:update",
+    "user:reset-password",
+    "user-permission:create",
+    "user-permission:update",
+    "user-permission:read",
+    "webhook:create_or_update",
+    "webhook:delete",
+    "webhook:read",
+]
+
 
 # borrow this fideslib util for now, since there are dependency conflicts with fideslib and fidesctl
 def str_to_b64_str(string: str, encoding: str = "UTF-8") -> str:
@@ -80,53 +125,10 @@ def create_oauth_client(access_token):
 
     See http://localhost:8080/docs#/OAuth/acquire_access_token_api_v1_oauth_token_post
     """
-    scopes_data = [
-        "client:create",
-        "client:delete",
-        "client:read",
-        "client:update",
-        "config:read",
-        "connection:create_or_update",
-        "connection:delete",
-        "connection:read",
-        "connection:authorize",
-        "connection_type:read",  # added in 1.6.3
-        "dataset:create_or_update",
-        "dataset:delete",
-        "dataset:read",
-        "encryption:exec",
-        "policy:create_or_update",
-        "policy:delete",
-        "policy:read",
-        "privacy-request:delete",
-        "privacy-request:read",
-        "privacy-request:resume",
-        "privacy-request:review",
-        "rule:create_or_update",
-        "rule:delete",
-        "rule:read",
-        "saas_config:create_or_update",
-        "saas_config:delete",
-        "saas_config:read",
-        "scope:read",
-        "storage:create_or_update",
-        "storage:delete",
-        "storage:read",
-        "user:create",
-        "user:delete",
-        "user:update",
-        "user:reset-password",
-        "user-permission:create",
-        "user-permission:update",
-        "user-permission:read",
-        "webhook:create_or_update",
-        "webhook:delete",
-        "webhook:read",
-    ]
     response = requests.post(
         f"{FIDESOPS_URL}/api/v1/oauth/client",
         headers=oauth_headers(access_token),
-        json=scopes_data,
+        json=SCOPES,
     )
 
     if response.ok:
@@ -161,7 +163,15 @@ def create_user(username, password, access_token):
         user = response.json()
         if user["id"]:
             logger.info(f"Created fidesops user '{username}' via /api/v1/user")
-            return user
+
+            # Now update the user's scopes
+            response = requests.put(
+                f"{FIDESOPS_URL}/api/v1/user/{user['id']}/permission",
+                headers=oauth_headers(access_token=access_token),
+                json={"id": user["id"], "scopes": SCOPES},
+            )
+            if response.ok:
+                return user
 
     raise RuntimeError(
         f"fidesops user creation failed! response.status_code={response.status_code}, response.json()={response.json()}",

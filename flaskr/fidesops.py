@@ -861,12 +861,12 @@ if __name__ == "__main__":
     while True:
         try:
             res = requests.get(f"{FIDESOPS_URL}/health")
-            # if res.json()["database"] == "unhealthy":
-            #     print("connection unhealthy, retrying")
-            #     raise requests.ConnectionError
-            # if res.json()["database"] == "needs migration":
-            #     print("needs migration")
-            #     break
+            if res.json()["database"] == "unhealthy":
+                print("connection unhealthy, retrying")
+                raise requests.ConnectionError
+            if res.json()["database"] == "needs migration":
+                print("needs migration")
+                break
             break
         except requests.ConnectionError:
             time.sleep(1)

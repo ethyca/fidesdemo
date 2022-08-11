@@ -23,7 +23,7 @@ logger = logging.getLogger(__name__)
 
 # NOTE: In a real application, these secrets and config values would be provided
 # via ENV vars or similar, but we've inlined everything here for simplicity
-FIDESOPS_URL = "http://localhost:8080"
+FIDESOPS_URL = "http://localhost:8081"
 ROOT_CLIENT_ID = "fidesopsadmin"
 ROOT_CLIENT_SECRET = "fidesopsadminsecret"
 FIDESOPS_USERNAME = "fidesopsuser"
@@ -91,7 +91,7 @@ def get_access_token(client_id, client_secret):
 
     Returns a valid access token if successful, or throws an error otherwise.
 
-    See http://localhost:8080/docs#/OAuth/acquire_access_token_api_v1_oauth_token_post
+    See http://localhost:8081/docs#/OAuth/acquire_access_token_api_v1_oauth_token_post
     """
     data = {
         "grant_type": "client_credentials",
@@ -123,7 +123,7 @@ def create_oauth_client(access_token):
 
     Returns the response JSON if successful, or throws an error otherwise.
 
-    See http://localhost:8080/docs#/OAuth/acquire_access_token_api_v1_oauth_token_post
+    See http://localhost:8081/docs#/OAuth/acquire_access_token_api_v1_oauth_token_post
     """
     response = requests.post(
         f"{FIDESOPS_URL}/api/v1/oauth/client",
@@ -149,7 +149,7 @@ def create_user(username, password, access_token):
 
     Returns the response JSON if successful, or throws an error otherwise.
 
-    See http://localhost:8080/docs#/Users/create_user_api_v1_user_post
+    See http://localhost:8081/docs#/Users/create_user_api_v1_user_post
     """
     user_data = {"username": username, "password": str_to_b64_str(password)}
 
@@ -185,7 +185,7 @@ def create_postgres_connection(key, access_token):
 
     Returns the response JSON if successful, or throws an error otherwise.
 
-    See http://localhost:8080/docs#/Connections/put_connections_api_v1_connection_put
+    See http://localhost:8081/docs#/Connections/put_connections_api_v1_connection_put
     """
     connection_create_data = [
         {
@@ -221,7 +221,7 @@ def create_mailchimp_saas_connection(key, access_token):
 
     Returns the response JSON if successful, or throws an error otherwise.
 
-    See http://localhost:8080/docs#/Connections/put_connections_api_v1_connection_put
+    See http://localhost:8081/docs#/Connections/put_connections_api_v1_connection_put
     """
     connection_create_data = [
         {
@@ -288,7 +288,7 @@ def configure_postgres_connection(
 
     Returns the response JSON if successful, or throws an error otherwise.
 
-    See http://localhost:8080/docs#/Connections/put_connection_config_secrets_api_v1_connection__connection_key__secret_put
+    See http://localhost:8081/docs#/Connections/put_connection_config_secrets_api_v1_connection__connection_key__secret_put
     """
     connection_secrets_data = {
         "host": host,
@@ -322,7 +322,7 @@ def configure_saas_connection(key, domain, username, api_key, access_token):
 
     Returns the response JSON if successful, or throws an error otherwise.
 
-    See http://localhost:8080/docs#/Connections/put_connection_config_secrets_api_v1_connection__connection_key__secret_put
+    See http://localhost:8081/docs#/Connections/put_connection_config_secrets_api_v1_connection__connection_key__secret_put
     """
     connection_secrets_data = {
         "domain": domain,
@@ -357,7 +357,7 @@ def validate_dataset(connection_key, yaml_path, access_token):
 
     Returns the response JSON if successful, or throws an error otherwise.
 
-    See http://localhost:8080/docs#/Datasets/validate_dataset_api_v1_connection__connection_key__validate_dataset_put
+    See http://localhost:8081/docs#/Datasets/validate_dataset_api_v1_connection__connection_key__validate_dataset_put
     """
 
     with open(yaml_path, "r") as file:
@@ -398,7 +398,7 @@ def create_dataset(connection_key, yaml_path, access_token):
 
     Returns the response JSON if successful, or throws an error otherwise.
 
-    See http://localhost:8080/docs#/Datasets/put_datasets_api_v1_connection__connection_key__dataset_put
+    See http://localhost:8081/docs#/Datasets/put_datasets_api_v1_connection__connection_key__dataset_put
     """
 
     with open(yaml_path, "r") as file:
@@ -431,7 +431,7 @@ def create_local_storage(key, format, access_token):
 
     Returns the response JSON if successful, or throws an error otherwise.
 
-    See http://localhost:8080/docs#/Storage/put_config_api_v1_storage_config_put
+    See http://localhost:8081/docs#/Storage/put_config_api_v1_storage_config_put
     """
     storage_create_data = [
         {
@@ -470,7 +470,7 @@ def create_policy(key, access_token):
 
     Returns the response JSON if successful, or throws an error otherwise.
 
-    See http://localhost:8080/docs#/Policy/create_or_update_policies_api_v1_policy_put
+    See http://localhost:8081/docs#/Policy/create_or_update_policies_api_v1_policy_put
     """
 
     policy_create_data = [
@@ -503,7 +503,7 @@ def delete_policy_rule(policy_key, key, access_token):
 
     Returns the response JSON.
 
-    See http://localhost:8080/docs#/Policy/delete_rule_api_v1_policy__policy_key__rule__rule_key__delete
+    See http://localhost:8081/docs#/Policy/delete_rule_api_v1_policy__policy_key__rule__rule_key__delete
     """
     return requests.delete(
         f"{FIDESOPS_URL}/api/v1/policy/{policy_key}/rule/{key}",
@@ -525,7 +525,7 @@ def create_policy_rule(
 
     Returns the response JSON if successful, or throws an error otherwise.
 
-    See http://localhost:8080/docs#/Policy/create_or_update_rules_api_v1_policy__policy_key__rule_put
+    See http://localhost:8081/docs#/Policy/create_or_update_rules_api_v1_policy__policy_key__rule_put
     """
 
     rule_create_data = [
@@ -563,7 +563,7 @@ def create_policy_rule_target(policy_key, rule_key, data_category, access_token)
 
     Returns the response JSON if successful, or throws an error otherwise.
 
-    See http://localhost:8080/docs#/Policy/create_or_update_rule_targets_api_v1_policy__policy_key__rule__rule_key__target_put
+    See http://localhost:8081/docs#/Policy/create_or_update_rule_targets_api_v1_policy__policy_key__rule__rule_key__target_put
     """
 
     target_create_data = [
@@ -597,7 +597,7 @@ def create_privacy_request(email, policy_key, access_token):
 
     Returns the response JSON if successful, or throws an error otherwise.
 
-    See http://localhost:8080/docs#/Privacy%20Requests/create_privacy_request_api_v1_privacy_request_post
+    See http://localhost:8081/docs#/Privacy%20Requests/create_privacy_request_api_v1_privacy_request_post
     """
 
     privacy_request_data = [

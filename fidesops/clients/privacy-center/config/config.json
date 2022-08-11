@@ -1,7 +1,7 @@
 {
     "title": "Fides Privacy Center",
     "description": "This is a live version of the Fides Privacy Center, running locally on this machine! Use the options below to submit privacy requests.",
-    "fidesops_host_development": "http://localhost:8080/api/v1",
+    "fidesops_host_development": "http://localhost:8081/api/v1",
     "fidesops_host_production": "",
     "logo_path": "/logo.svg",
     "actions": [{

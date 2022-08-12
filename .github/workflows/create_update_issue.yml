@@ -1,0 +1,27 @@
+name: Create Fidesdemo Update Issue
+
+on:
+  repository_dispatch:
+    types: [new-fidesops-release]
+
+jobs:
+  Create-Issue:
+    name: Create Fidesdemo Update Issue
+    permissions:
+      issues: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create Issue
+        uses: imjohnbo/issue-bot@v3
+        with:
+          body: |-
+            A newer version of fidesops (${{ github.event.client_payload.tag }}) has recently been released; the version in use by this repository is out of date.
+            Begin by updating the version in `requirements.txt`:
+            ```
+            fidesops==${{ github.event.client_payload.tag }}
+            ```
+            | :memo: Note | The version of `fidesops` must be pinned to an exact version number. |
+            |:-----------:|:---------------------------------------------------------------------|
+            There may be additional changes needed in this repository to guarantee the inclusion of upstream feature enhancements, bug fixes, and/or to maintain compatibility. Be sure to review the [changelog](${{ github.event.client_payload.url }}) to ensure that any such code changes are made in tandem with the version bump.
+          labels: documentation, enhancement
+          title: Update fidesdemo version to ${{ github.event.client_payload.tag }}

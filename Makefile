@@ -89,7 +89,7 @@ demo: preinstall
 	@echo "*      (edit '.env' to set ENV variables)       *"
 	@echo "*     (see 'make help' for other commands)      *"
 	@echo "*************************************************"
-	@echo "Fidesops webserver running at http://localhost:8081/docs"
+	@echo "Fidesops webserver running at http://localhost:8080/docs"
 	@echo "Fidesctl webserver running at http://localhost:9090/docs"
 	@echo "Fidesops Privacy Center running at http://localhost:4000"
 	@echo "Fidesops Admin UI running at http://localhost:3000/login (user: fidesopsuser, pass: fidesops1A!)"

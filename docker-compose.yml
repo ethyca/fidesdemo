@@ -20,7 +20,7 @@ services:
     expose:
       - 9090
     ports:
-      - "9090:8081"
+      - "9090:8080"
     environment:
       - FIDESCTL__API__DATABASE_USER=postgres
       - FIDESCTL__API__DATABASE_PASSWORD=postgres
@@ -45,18 +45,18 @@ services:
     volumes:
       - ./fides_tmp:/fidesops/fides_uploads
     expose:
-      - 8081
+      - 8080
       - 3000
       - 4000
     ports:
-      - "8081:8080"
+      - "8080:8080"
       - "3000:3000"
       - "4000:4000"
     environment:
       - FIDESOPS__SECURITY__APP_ENCRYPTION_KEY=OLMkv91j8DHiDAULnK5Lxx3kSCov30b3
       - FIDESOPS__SECURITY__OAUTH_ROOT_CLIENT_ID=fidesopsadmin
       - FIDESOPS__SECURITY__OAUTH_ROOT_CLIENT_SECRET=fidesopsadminsecret
-      - FIDESOPS__SECURITY__CORS_ORIGINS="http://localhost,http://localhost:4000,http://localhost:3000,http://localhost:8081,http://localhost:3001"
+      - FIDESOPS__SECURITY__CORS_ORIGINS="http://localhost,http://localhost:4000,http://localhost:3000,http://localhost:8080,http://localhost:3001"
       - FIDESOPS__DATABASE__SERVER=db
       - FIDESOPS__DATABASE__USER=postgres
       - FIDESOPS__DATABASE__PASSWORD=postgres

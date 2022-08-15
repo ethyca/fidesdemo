@@ -4,7 +4,7 @@
 fidesops webserver &
 
 # Start the fidesops admin UI
-cd clients/admin-ui && npx next start -p 3000 &
+cd clients/admin-ui && npx next dev -p 3000 &
 
 # Start the fidesops privacy center
 # TODO: Enable a production build once this issue is fixed: https://github.com/ethyca/fidesops/issues/492

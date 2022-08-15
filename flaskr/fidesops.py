@@ -9,12 +9,11 @@ Utility script to configure fidesops with:
 import json
 import logging
 import os
-import secrets
 import sys
 import time
+from base64 import b64encode
 from datetime import datetime
 from os.path import exists
-from typing import Dict, Any
 
 import requests
 import yaml
@@ -33,6 +32,57 @@ POSTGRES_SERVER = "db"
 POSTGRES_USER = "postgres"
 POSTGRES_PASSWORD = "postgres"
 POSTGRES_PORT = "5432"
+
+SCOPES = [
+    "client:create",
+    "client:delete",
+    "client:read",
+    "client:update",
+    "config:read",
+    "connection:create_or_update",
+    "connection:delete",
+    "connection:read",
+    "connection:authorize",
+    "connection_type:read",  # added in 1.6.3
+    "dataset:create_or_update",
+    "dataset:delete",
+    "dataset:read",
+    "encryption:exec",
+    "policy:create_or_update",
+    "policy:delete",
+    "policy:read",
+    "privacy-request:delete",
+    "privacy-request:read",
+    "privacy-request:resume",
+    "privacy-request:review",
+    "rule:create_or_update",
+    "rule:delete",
+    "rule:read",
+    "saas_config:create_or_update",
+    "saas_config:delete",
+    "saas_config:read",
+    "scope:read",
+    "storage:create_or_update",
+    "storage:delete",
+    "storage:read",
+    "user:create",
+    "user:delete",
+    "user:read",
+    "user:update",
+    "user:reset-password",
+    "user-permission:create",
+    "user-permission:update",
+    "user-permission:read",
+    "webhook:create_or_update",
+    "webhook:delete",
+    "webhook:read",
+]
+
+
+# borrow this fideslib util for now, since there are dependency conflicts with fideslib and fidesctl
+def str_to_b64_str(string: str, encoding: str = "UTF-8") -> str:
+    """Converts str into a utf-8 encoded string"""
+    return b64encode(string.encode(encoding)).decode(encoding)
 
 
 def get_access_token(client_id, client_secret):
@@ -75,46 +125,10 @@ def create_oauth_client(access_token):
 
     See http://localhost:8080/docs#/OAuth/acquire_access_token_api_v1_oauth_token_post
     """
-    scopes_data = [
-        "client:create",
-        "client:delete",
-        "client:read",
-        "client:update",
-        "config:read",
-        "connection:create_or_update",
-        "connection:delete",
-        "connection:read",
-        "dataset:create_or_update",
-        "dataset:delete",
-        "dataset:read",
-        "encryption:exec",
-        "policy:create_or_update",
-        "policy:delete",
-        "policy:read",
-        "privacy-request:delete",
-        "privacy-request:read",
-        "privacy-request:resume",
-        "privacy-request:review",
-        "rule:create_or_update",
-        "rule:delete",
-        "rule:read",
-        "saas_config:create_or_update",
-        "saas_config:delete",
-        "saas_config:read",
-        "scope:read",
-        "storage:create_or_update",
-        "storage:delete",
-        "storage:read",
-        "user:create",
-        "user:delete",
-        "webhook:create_or_update",
-        "webhook:delete",
-        "webhook:read",
-    ]
     response = requests.post(
         f"{FIDESOPS_URL}/api/v1/oauth/client",
         headers=oauth_headers(access_token),
-        json=scopes_data,
+        json=SCOPES,
     )
 
     if response.ok:
@@ -137,7 +151,7 @@ def create_user(username, password, access_token):
 
     See http://localhost:8080/docs#/Users/create_user_api_v1_user_post
     """
-    user_data = {"username": username, "password": password}
+    user_data = {"username": username, "password": str_to_b64_str(password)}
 
     response = requests.post(
         f"{FIDESOPS_URL}/api/v1/user",
@@ -149,7 +163,15 @@ def create_user(username, password, access_token):
         user = response.json()
         if user["id"]:
             logger.info(f"Created fidesops user '{username}' via /api/v1/user")
-            return user
+
+            # Now update the user's scopes
+            response = requests.put(
+                f"{FIDESOPS_URL}/api/v1/user/{user['id']}/permission",
+                headers=oauth_headers(access_token=access_token),
+                json={"id": user["id"], "scopes": SCOPES},
+            )
+            if response.ok:
+                return user
 
     raise RuntimeError(
         f"fidesops user creation failed! response.status_code={response.status_code}, response.json()={response.json()}",
@@ -615,7 +637,7 @@ def print_results(privacy_request_id):
     print(
         f"Waiting for fidesops privacy request results to upload to {results_path}..."
     )
-    while wait_time < 5:
+    while wait_time < 10:
         if exists(results_path):
             requests.get(f"{FIDESOPS_URL}/health")
             logger.info(
@@ -818,7 +840,7 @@ if __name__ == "__main__":
     else:
         logging.basicConfig(level=logging.WARN)
 
-    logger.info("Setting up fideops environment with the following configuration:")
+    logger.info("Setting up fidesops environment with the following configuration:")
     logger.info(f"  FIDESOPS_URL = {FIDESOPS_URL}")
     logger.info(f"  ROOT_CLIENT_ID = {ROOT_CLIENT_ID}")
     logger.info(f"  ROOT_CLIENT_SECRET = {ROOT_CLIENT_SECRET}")
@@ -838,10 +860,18 @@ if __name__ == "__main__":
     print("Waiting for fidesops to be healthy...")
     while True:
         try:
-            requests.get(f"{FIDESOPS_URL}/health")
+            res = requests.get(f"{FIDESOPS_URL}/health")
+            if res.json()["database"] == "unhealthy":
+                print("connection unhealthy, retrying")
+                raise requests.ConnectionError
+            if res.json()["database"] == "needs migration":
+                print("needs migration")
+                break
             break
         except requests.ConnectionError:
             time.sleep(1)
+        except Exception as e:
+            print(e)
 
     # Create a new OAuth client every time to fetch an access token (not efficient, but it's a demo!)
     root_token = get_access_token(

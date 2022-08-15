@@ -186,8 +186,10 @@ fidesctl-scan-system-aws: fidesctl-aws-check-env compose-up
 ####################
 
 .PHONY: fidesops-request
-fidesops-request: export FIDESOPS__EXECUTION__REQUIRE_MANUAL_REQUEST_APPROVAL=False
-fidesops-request: compose-up
+fidesops-request:  export FIDESOPS__EXECUTION__REQUIRE_MANUAL_REQUEST_APPROVAL=False
+# fixes issue with endless waiting for fidesops to be healthy (similar steps we do for make demo)
+fidesops-request: preinstall
+	@make compose-up
 	@echo ""
 	@echo "Configuring fidesops and running an example request..."
 	./venv/bin/python flaskr/fidesops.py

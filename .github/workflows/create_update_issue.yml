@@ -6,7 +6,7 @@ on:
 
 jobs:
   Create-Issue:
-    name: Create Fidesdemo Update Issue
+    name: Create Fidesops Update Issue
     permissions:
       issues: write
     runs-on: ubuntu-latest

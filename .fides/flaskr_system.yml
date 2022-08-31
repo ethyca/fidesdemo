@@ -7,8 +7,7 @@ system:
     privacy_declarations:
       - name: Provide e-commerce operations to example customers
         data_categories:
-          - user.provided.identifiable
-          - user.derived.identifiable
+          - user
           - system.operations
         data_use: provide.system.operations.e-commerce
         data_subjects:

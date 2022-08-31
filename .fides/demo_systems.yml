@@ -1,0 +1,308 @@
+system:
+  - fides_key: demo_salesforce
+    name: Salesforce
+    description: Customer Relationship Management Platform
+    system_type: 3rd Party
+    administrating_department: Sales
+    data_responsibility_title: Processor
+    third_country_transfers:
+    - USA
+    data_protection_impact_assessment:
+      is_required: True
+      progress: Complete
+      link: https://example.org/analytics_system_data_protection_impact_assessment
+    system_dependencies:
+      - demo_hubspot
+      - demo_snowflake
+    privacy_declarations:
+      - name: Track customer details for outbound sales and ongoing communications
+        data_categories:
+          - system.operations
+          - user.contact
+          - user.contact.email
+          - user.organization
+        data_use: advertising.first_party
+        data_subjects:
+          - prospect
+          - customer
+        data_qualifier: aggregated.anonymized.unlinked_pseudonymized.pseudonymized.identified
+
+  - fides_key: demo_hubspot
+    name: Hubspot
+    description: Marketing Communication Platform
+    system_type: 3rd Party
+    administrating_department: Marketing
+    data_responsibility_title: Processor
+    third_country_transfers:
+    - USA
+    data_protection_impact_assessment:
+      is_required: True
+      progress: Complete
+      link: https://example.org/analytics_system_data_protection_impact_assessment
+    system_dependencies:
+      - demo_salesforce
+      - demo_snowflake
+    privacy_declarations:
+      - name: Send emails and communications to tracked contacts
+        data_categories:
+          - system.operations
+          - user.contact
+          - user.contact.email
+          - user.organization
+        data_use: advertising.first_party
+        data_subjects:
+          - prospect
+          - customer
+        data_qualifier: aggregated.anonymized.unlinked_pseudonymized.pseudonymized.identified
+
+  - fides_key: demo_sendgrid
+    name: Sendgrid
+    description: Transactional Email Provider
+    system_type: 3rd Party
+    administrating_department: Engineering
+    data_responsibility_title: Processor
+    third_country_transfers:
+    - USA
+    data_protection_impact_assessment:
+      is_required: True
+      progress: Complete
+      link: https://example.org/analytics_system_data_protection_impact_assessment
+    privacy_declarations:
+      - name: Send email notifications to users
+        data_categories:
+          - system.operations
+          - user.contact.email
+        data_use: provide.service
+        data_subjects:
+          - customer
+        data_qualifier: aggregated.anonymized.unlinked_pseudonymized.pseudonymized.identified
+
+  - fides_key: demo_zendesk
+    name: Zendesk
+    description: Customer Support Desk
+    system_type: 3rd Party
+    administrating_department: Support
+    data_responsibility_title: Processor
+    third_country_transfers:
+    - USA
+    data_protection_impact_assessment:
+      is_required: True
+      progress: Complete
+      link: https://example.org/analytics_system_data_protection_impact_assessment
+    system_dependencies:
+      - demo_snowflake
+    privacy_declarations:
+      - name: Manage support tickets with customers
+        data_categories:
+          - system.operations
+          - user.contact.email
+          - user.organization
+        data_use: provide.service.operations.support
+        data_subjects:
+          - customer
+        data_qualifier: aggregated.anonymized.unlinked_pseudonymized.pseudonymized.identified
+
+  - fides_key: demo_stripe
+    name: Stripe
+    description: Payment Processor
+    system_type: 3rd Party
+    administrating_department: Engineering
+    data_responsibility_title: Processor
+    third_country_transfers:
+    - USA
+    data_protection_impact_assessment:
+      is_required: True
+      progress: Complete
+      link: https://example.org/analytics_system_data_protection_impact_assessment
+    system_dependencies:
+      - demo_snowflake
+    privacy_declarations:
+      - name: Process customer payments
+        data_categories:
+          - system.operations
+          - user.contact
+          - user.financial
+          - user.organization
+        data_use: provide.service
+        data_subjects:
+          - customer
+        data_qualifier: aggregated.anonymized.unlinked_pseudonymized.pseudonymized.identified
+
+  - fides_key: demo_users_service
+    name: Users Service
+    description: Microservice for managing user data
+    system_type: Service
+    administrating_department: Engineering
+    data_responsibility_title: Controller
+    third_country_transfers:
+    - USA
+    data_protection_impact_assessment:
+      is_required: True
+      progress: Complete
+      link: https://example.org/analytics_system_data_protection_impact_assessment
+    system_dependencies:
+      - demo_postgres
+      - demo_sendgrid
+    privacy_declarations:
+      - name: Manage user data
+        data_categories:
+          - system.operations
+          - user.contact
+          - user.contact.email
+          - user.unique_id
+          - user.name
+          - user.credentials
+          - user.organization
+        data_use: provide.service
+        data_subjects:
+          - customer
+        data_qualifier: aggregated.anonymized.unlinked_pseudonymized.pseudonymized.identified
+
+  - fides_key: demo_payments_service
+    name: Payments Service
+    description: Microservice for processing payments
+    system_type: Service
+    administrating_department: Engineering
+    data_responsibility_title: Controller
+    third_country_transfers:
+    - USA
+    data_protection_impact_assessment:
+      is_required: True
+      progress: Complete
+      link: https://example.org/analytics_system_data_protection_impact_assessment
+    system_dependencies:
+      - demo_postgres
+      - demo_stripe
+    privacy_declarations:
+      - name: Manage payments data
+        data_categories:
+          - system.operations
+          - user.unique_id
+          - user.financial
+          - user.organization
+        data_use: provide.service
+        data_subjects:
+          - customer
+        data_qualifier: aggregated.anonymized.unlinked_pseudonymized.pseudonymized.identified
+
+  - fides_key: demo_reporting_service
+    name: Reporting Service
+    description: Microservice for generating reports for users
+    system_type: Service
+    administrating_department: Engineering
+    data_responsibility_title: Controller
+    third_country_transfers:
+    - USA
+    data_protection_impact_assessment:
+      is_required: True
+      progress: Complete
+      link: https://example.org/analytics_system_data_protection_impact_assessment
+    system_dependencies:
+      - demo_postgres
+      - demo_mysql
+    privacy_declarations:
+      - name: Generate reports
+        data_categories:
+          - system.operations
+          - user.contact
+          - user.unique_id
+          - user.financial
+          - user.organization
+        data_use: provide.service
+        data_subjects:
+          - customer
+        data_qualifier: aggregated.anonymized.unlinked_pseudonymized.pseudonymized.identified
+
+  - fides_key: demo_mysql
+    name: Reporting Database (MySQL)
+    description: Specialized database for storing generated user reports
+    system_type: Database
+    administrating_department: Engineering
+    data_responsibility_title: Controller
+    third_country_transfers:
+    - USA
+    data_protection_impact_assessment:
+      is_required: True
+      progress: Complete
+      link: https://example.org/analytics_system_data_protection_impact_assessment
+    privacy_declarations:
+      - name: Store generated user reports
+        data_categories:
+          - system.operations
+          - user.contact
+          - user.unique_id
+          - user.financial
+          - user.organization
+        data_use: provide.service
+        data_subjects:
+          - customer
+        data_qualifier: aggregated.anonymized.unlinked_pseudonymized.pseudonymized.identified
+
+  - fides_key: demo_snowflake
+    name: Analytics Data Warehouse (Snowflake)
+    description: Centralized data warehouse for business analytics
+    system_type: Database
+    administrating_department: Engineering
+    data_responsibility_title: Controller
+    third_country_transfers:
+    - USA
+    data_protection_impact_assessment:
+      is_required: True
+      progress: Complete
+      link: https://example.org/analytics_system_data_protection_impact_assessment
+    system_dependencies:
+      - demo_salesforce
+      - demo_hubspot
+      - demo_stripe
+      - demo_zendesk
+      - demo_postgres
+    privacy_declarations:
+      - name: Store replicated business data for analytics
+        data_categories:
+          - system.operations
+          - user.contact
+          - user.unique_id
+          - user.financial
+          - user.credentials
+          - user.organization
+        data_use: improve
+        data_subjects:
+          - customer
+        data_qualifier: aggregated.anonymized.unlinked_pseudonymized.pseudonymized.identified
+        # NOTE: uncomment to link references to a dataset
+        # dataset_references:
+        #   - test
+
+  - fides_key: demo_postgres
+    name: Application Database (PostgreSQL)
+    description: Primary application database for services
+    system_type: Database
+    administrating_department: Engineering
+    data_responsibility_title: Controller
+    third_country_transfers:
+    - USA
+    data_protection_impact_assessment:
+      is_required: True
+      progress: Complete
+      link: https://example.org/analytics_system_data_protection_impact_assessment
+    system_dependencies:
+      - demo_snowflake
+    privacy_declarations:
+      - name: Store application data
+        data_categories:
+          - system.operations
+          - user.contact
+          - user.contact.email
+          - user.unique_id
+          - user.name
+          - user.financial
+          - user.credentials
+          - user.organization
+        data_use: provide.service
+        data_subjects:
+          - customer
+        data_qualifier: aggregated.anonymized.unlinked_pseudonymized.pseudonymized.identified
+        # NOTE: uncomment to link references to a dataset
+        # dataset_references:
+        #   - public
+

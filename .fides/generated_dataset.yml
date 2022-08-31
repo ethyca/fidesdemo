@@ -1,0 +1,108 @@
+dataset:
+- fides_key: public
+  organization_fides_key: default_organization
+  name: public
+  description: 'Fides Generated Description for Schema: public'
+  data_categories: []
+  data_qualifier: aggregated.anonymized.unlinked_pseudonymized.pseudonymized.identified
+  retention: No retention or erasure policy
+  collections:
+  - name: products
+    description: 'Fides Generated Description for Table: products'
+    data_categories: []
+    data_qualifier: aggregated.anonymized.unlinked_pseudonymized.pseudonymized.identified
+    fields:
+    - name: created_at
+      description: 'Fides Generated Description for Column: created_at'
+      data_categories: []
+      data_qualifier: aggregated.anonymized.unlinked_pseudonymized.pseudonymized.identified
+    - name: description
+      description: 'Fides Generated Description for Column: description'
+      data_categories: []
+      data_qualifier: aggregated.anonymized.unlinked_pseudonymized.pseudonymized.identified
+    - name: id
+      description: 'Fides Generated Description for Column: id'
+      data_categories: []
+      data_qualifier: aggregated.anonymized.unlinked_pseudonymized.pseudonymized.identified
+    - name: name
+      description: 'Fides Generated Description for Column: name'
+      data_categories: []
+      data_qualifier: aggregated.anonymized.unlinked_pseudonymized.pseudonymized.identified
+    - name: price
+      description: 'Fides Generated Description for Column: price'
+      data_categories: []
+      data_qualifier: aggregated.anonymized.unlinked_pseudonymized.pseudonymized.identified
+    - name: seller_id
+      description: 'Fides Generated Description for Column: seller_id'
+      data_categories: []
+      data_qualifier: aggregated.anonymized.unlinked_pseudonymized.pseudonymized.identified
+  - name: purchases
+    description: 'Fides Generated Description for Table: purchases'
+    data_categories: []
+    data_qualifier: aggregated.anonymized.unlinked_pseudonymized.pseudonymized.identified
+    fields:
+    - name: buyer_id
+      description: 'Fides Generated Description for Column: buyer_id'
+      data_categories: []
+      data_qualifier: aggregated.anonymized.unlinked_pseudonymized.pseudonymized.identified
+    - name: city
+      description: 'Fides Generated Description for Column: city'
+      data_categories: []
+      data_qualifier: aggregated.anonymized.unlinked_pseudonymized.pseudonymized.identified
+    - name: created_at
+      description: 'Fides Generated Description for Column: created_at'
+      data_categories: []
+      data_qualifier: aggregated.anonymized.unlinked_pseudonymized.pseudonymized.identified
+    - name: id
+      description: 'Fides Generated Description for Column: id'
+      data_categories: []
+      data_qualifier: aggregated.anonymized.unlinked_pseudonymized.pseudonymized.identified
+    - name: product_id
+      description: 'Fides Generated Description for Column: product_id'
+      data_categories: []
+      data_qualifier: aggregated.anonymized.unlinked_pseudonymized.pseudonymized.identified
+    - name: state
+      description: 'Fides Generated Description for Column: state'
+      data_categories: []
+      data_qualifier: aggregated.anonymized.unlinked_pseudonymized.pseudonymized.identified
+    - name: street_1
+      description: 'Fides Generated Description for Column: street_1'
+      data_categories: []
+      data_qualifier: aggregated.anonymized.unlinked_pseudonymized.pseudonymized.identified
+    - name: street_2
+      description: 'Fides Generated Description for Column: street_2'
+      data_categories: []
+      data_qualifier: aggregated.anonymized.unlinked_pseudonymized.pseudonymized.identified
+    - name: zip
+      description: 'Fides Generated Description for Column: zip'
+      data_categories: []
+      data_qualifier: aggregated.anonymized.unlinked_pseudonymized.pseudonymized.identified
+  - name: users
+    description: 'Fides Generated Description for Table: users'
+    data_categories: []
+    data_qualifier: aggregated.anonymized.unlinked_pseudonymized.pseudonymized.identified
+    fields:
+    - name: created_at
+      description: 'Fides Generated Description for Column: created_at'
+      data_categories: []
+      data_qualifier: aggregated.anonymized.unlinked_pseudonymized.pseudonymized.identified
+    - name: email
+      description: 'Fides Generated Description for Column: email'
+      data_categories: []
+      data_qualifier: aggregated.anonymized.unlinked_pseudonymized.pseudonymized.identified
+    - name: first_name
+      description: 'Fides Generated Description for Column: first_name'
+      data_categories: []
+      data_qualifier: aggregated.anonymized.unlinked_pseudonymized.pseudonymized.identified
+    - name: id
+      description: 'Fides Generated Description for Column: id'
+      data_categories: []
+      data_qualifier: aggregated.anonymized.unlinked_pseudonymized.pseudonymized.identified
+    - name: last_name
+      description: 'Fides Generated Description for Column: last_name'
+      data_categories: []
+      data_qualifier: aggregated.anonymized.unlinked_pseudonymized.pseudonymized.identified
+    - name: password
+      description: 'Fides Generated Description for Column: password'
+      data_categories: []
+      data_qualifier: aggregated.anonymized.unlinked_pseudonymized.pseudonymized.identified

@@ -13,9 +13,8 @@ system:
     privacy_declarations:
       - name: Send transactional emails to customers
         data_categories:
-          - user.provided.identifiable.contact
-          - user.provided.identifiable
-          - user.derived.identifiable
+          - user.contact
+          - user
           - system.operations
         data_use: provide.system.operations.e-commerce
         data_subjects:

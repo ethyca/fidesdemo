@@ -9,8 +9,7 @@ policy:
         data_categories:
           matches: ANY
           values:
-            - user.provided.identifiable
-            - user.derived.identifiable
+            - user
         data_uses:
           matches: ANY
           values:
@@ -33,14 +32,14 @@ policy:
         data_categories:
           matches: ANY
           values:
-            - user.provided.identifiable.biometric
-            - user.provided.identifiable.childrens
-            - user.provided.identifiable.genetic
-            - user.provided.identifiable.health_and_medical
-            - user.provided.identifiable.political_opinion
-            - user.provided.identifiable.race
-            - user.provided.identifiable.religious_belief
-            - user.provided.identifiable.sexual_orientation
+            - user.biometric
+            - user.childrens
+            - user.genetic
+            - user.health_and_medical
+            - user.political_opinion
+            - user.race
+            - user.religious_belief
+            - user.sexual_orientation
         data_uses:
           matches: ANY
           values:

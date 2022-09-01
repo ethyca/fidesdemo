@@ -1,5 +1,5 @@
 # Demo Dockerfile that packages the fidesops webserver, admin UI, and privacy center in a single container
-FROM ethyca/fidesops:1.7.2
+FROM ethyca/fidesops:1.7.1
 
 # Install node v16 on top of the fidesops image
 RUN \

@@ -159,7 +159,7 @@ fidesctl-export-datamap: compose-up
 fidesctl-generate-dataset-db: compose-up
 	@echo ""
 	@echo "Generating dataset with fidesctl..."
-	./venv/bin/fidesctl generate dataset db postgresql://postgres:postgres@localhost:6432/flaskr .fides/generated_dataset.yml
+	./venv/bin/fidesctl generate dataset db --connection-string postgresql://postgres:postgres@localhost:6432/flaskr .fides/generated_dataset.yml
 
 .PHONY: fidesctl-aws-check-env
 fidesctl-aws-check-env:

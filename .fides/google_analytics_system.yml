@@ -16,11 +16,10 @@ system:
       # https://developers.google.com/analytics/devguides/collection/analyticsjs/field-reference
       - name: Track & report on page views
         data_categories:
-          - user.derived.identifiable.browsing_history
-          - user.derived.identifiable.device.cookie_id
-          - user.derived.identifiable.telemetry
-          - user.derived.identifiable.location
-          - user.derived.nonidentifiable
+          - user.browsing_history
+          - user.device.cookie_id
+          - user.telemetry
+          - user.location
         data_use: collect.analytics
         data_subjects:
           - flaskr_customer
@@ -29,9 +28,9 @@ system:
       # See https://developers.google.com/analytics/devguides/reporting/realtime/dimsmets/geonetwork
       - name: Derive user geographic location
         data_categories:
-          - user.derived.identifiable.device.ip_address
-          - user.derived.identifiable.location
-          - user.derived.identifiable
+          - user.device.ip_address
+          - user.location
+          - user
         data_use: collect.analytics
         data_subjects:
           - flaskr_customer

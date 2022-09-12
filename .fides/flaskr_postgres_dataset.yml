@@ -8,7 +8,7 @@ dataset:
     - name: created_at
       data_categories: [system.operations]
     - name: description
-      data_categories: [user.provided.identifiable]
+      data_categories: [user]
       fidesops_meta:
         data_type: string
     - name: id
@@ -17,15 +17,15 @@ dataset:
         primary_key: True
         data_type: integer
     - name: name
-      data_categories: [user.provided.identifiable]
+      data_categories: [user]
       fidesops_meta:
         data_type: string
     - name: price
-      data_categories: [user.provided.identifiable]
+      data_categories: [user]
       fidesops_meta:
         data_type: integer
     - name: seller_id
-      data_categories: [user.derived.identifiable.unique_id]
+      data_categories: [user.unique_id]
       fidesops_meta:
         references:
           - dataset: flaskr_postgres_dataset
@@ -35,7 +35,7 @@ dataset:
   - name: purchases
     fields:
     - name: buyer_id
-      data_categories: [user.derived.identifiable.unique_id]
+      data_categories: [user.unique_id]
       fidesops_meta:
         references:
           - dataset: flaskr_postgres_dataset
@@ -43,7 +43,7 @@ dataset:
             direction: from
         data_type: integer
     - name: city
-      data_categories: [user.provided.identifiable.contact.city]
+      data_categories: [user.contact.address.city]
       fidesops_meta:
         data_type: string
     - name: created_at
@@ -58,19 +58,19 @@ dataset:
       fidesops_meta:
         data_type: integer
     - name: state
-      data_categories: [user.provided.identifiable.contact.state]
+      data_categories: [user.contact.address.state]
       fidesops_meta:
         data_type: string
     - name: street_1
-      data_categories: [user.provided.identifiable.contact.street]
+      data_categories: [user.contact.address.street]
       fidesops_meta:
         data_type: string
     - name: street_2
-      data_categories: [user.provided.identifiable.contact.street]
+      data_categories: [user.contact.address.street]
       fidesops_meta:
         data_type: string
     - name: zip
-      data_categories: [user.provided.identifiable.contact.postal_code]
+      data_categories: [user.contact.address.postal_code]
       fidesops_meta:
         data_type: string
   - name: users
@@ -78,27 +78,27 @@ dataset:
     - name: created_at
       data_categories: [system.operations]
     - name: email
-      data_categories: [user.provided.identifiable.contact.email]
+      data_categories: [user.contact.email]
       fidesops_meta:
         identity: email
         data_type: string
     - name: first_name
-      data_categories: [user.provided.identifiable.name]
+      data_categories: [user.name]
       fidesops_meta:
         data_type: string
     - name: id
       data_categories:
-        - user.derived.identifiable.unique_id
-        # - user.provided.identifiable.health_and_medical # uncomment and run `make fidesctl-evaluate` to see an example violation
+        - user.unique_id
+        # - user.health_and_medical # uncomment and run `make fidesctl-evaluate` to see an example violation
       fidesops_meta:
         primary_key: True
         data_type: integer
     - name: last_name
-      data_categories: [user.provided.identifiable.name]
+      data_categories: [user.name]
       fidesops_meta:
         data_type: string
     - name: password
-      data_categories: [user.provided.identifiable.credentials.password]
+      data_categories: [user.credentials.password]
       data_qualifier: aggregated.anonymized.unlinked_pseudonymized.pseudonymized
       fidesops_meta:
         data_type: string

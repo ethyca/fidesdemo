@@ -7,10 +7,9 @@ system:
     privacy_declarations:
       - name: Provide e-commerce operations to example customers
         data_categories:
-          - user.provided.identifiable
-          - user.derived.identifiable
+          - user
           - system.operations
-        data_use: provide.system.operations.e-commerce
+        data_use: provide.service.operations.e-commerce
         data_subjects:
           - flaskr_customer
         data_qualifier: aggregated.anonymized.unlinked_pseudonymized.pseudonymized.identified

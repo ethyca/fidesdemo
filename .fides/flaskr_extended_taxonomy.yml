@@ -1,12 +1,12 @@
 data_use:
-  - fides_key: provide.system.operations.e-commerce
+  - fides_key: provide.service.operations.e-commerce
     name: e-commerce
     description: Usage of our Flaskr e-commerce platform
     recipients:
     - Shipping partner
     legal_basis: Consent
     special_category: Consent
-    parent_key: provide.system.operations
+    parent_key: provide.service.operations
   - fides_key: collect.analytics
     name: Analytics Tracking
     description: Analytics tracking for our Flaskr e-commerce platform

@@ -761,7 +761,7 @@ def setup_defaults(access_token):
         access_token=access_token,
     )
 
-    # Create a default access policy that returns user.provided.identifiable.contact & name
+    # Create a default access policy that returns user.contact & name
     create_policy(
         key="default_access_policy",
         access_token=access_token,
@@ -782,17 +782,17 @@ def setup_defaults(access_token):
     create_policy_rule_target(
         policy_key="default_access_policy",
         rule_key="default_access_rule",
-        data_category="user.provided.identifiable.contact",
+        data_category="user.contact",
         access_token=access_token,
     )
     create_policy_rule_target(
         policy_key="default_access_policy",
         rule_key="default_access_rule",
-        data_category="user.provided.identifiable.name",
+        data_category="user.name",
         access_token=access_token,
     )
 
-    # Create a default erasure policy that masks user.provided.identifiable.contact & name
+    # Create a default erasure policy that masks user.contact & name
     create_policy(
         key="default_erasure_policy",
         access_token=access_token,
@@ -813,13 +813,13 @@ def setup_defaults(access_token):
     create_policy_rule_target(
         policy_key="default_erasure_policy",
         rule_key="default_erasure_rule",
-        data_category="user.provided.identifiable.contact",
+        data_category="user.contact",
         access_token=access_token,
     )
     create_policy_rule_target(
         policy_key="default_erasure_policy",
         rule_key="default_erasure_rule",
-        data_category="user.provided.identifiable.name",
+        data_category="user.name",
         access_token=access_token,
     )
 
